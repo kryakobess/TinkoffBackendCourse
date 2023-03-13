@@ -7,10 +7,16 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class StackOverflowHandler extends AbstractHandler{
+public final class StackOverflowHandler extends AbstractHandler{
+
     public StackOverflowHandler(AbstractHandler next){
         super(next);
     }
+
+    public StackOverflowHandler(){
+        super();
+    }
+
     @Override
     public Parsable handle(URL url) {
         if (url.getHost().equals("stackoverflow.com")){
@@ -24,5 +30,4 @@ public class StackOverflowHandler extends AbstractHandler{
         }
         return nextHandler.handle(url);
     }
-
 }

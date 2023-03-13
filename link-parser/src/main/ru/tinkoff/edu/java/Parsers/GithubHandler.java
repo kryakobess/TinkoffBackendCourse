@@ -7,10 +7,16 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class GithubHandler extends AbstractHandler{
+public final class GithubHandler extends AbstractHandler{
+
     public GithubHandler(AbstractHandler next){
         super(next);
     }
+
+    public GithubHandler(){
+        super();
+    }
+
     @Override
     public Parsable handle(URL url) {
         if (url.getHost().equals("github.com")){

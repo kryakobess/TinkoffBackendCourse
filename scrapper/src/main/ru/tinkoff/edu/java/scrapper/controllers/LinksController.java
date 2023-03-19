@@ -24,7 +24,7 @@ public class LinksController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public LinkResponse deleteLink(@RequestParam("Tg-Chat-Id") int tgChatId, RemoveLinkRequest removeLinkRequest){
+    public LinkResponse deleteLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody RemoveLinkRequest removeLinkRequest){
         return null;
     }
 }

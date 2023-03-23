@@ -11,18 +11,18 @@ import scrapper.services.StackOverflowClient;
 @Configuration
 public class ClientConfiguration {
     @Bean
-    GitHubClient gitHubClient(){
+    GitHubClient gitHubClient(ApplicationConfig appConfig){
         WebClient webClient = WebClient.builder()
-                .baseUrl("https://api.github.com")
+                .baseUrl(appConfig.gitHubBaseURL().isBlank() ? "https://api.github.com" : appConfig.gitHubBaseURL())
                 .build();
         HttpServiceProxyFactory factory =  HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
         return factory.createClient(GitHubClient.class);
     }
 
     @Bean
-    StackOverflowClient stackOverflowClient(){
+    StackOverflowClient stackOverflowClient(ApplicationConfig appConfig){
         WebClient webClient = WebClient.builder()
-                .baseUrl("https://api.stackexchange.com")
+                .baseUrl(appConfig.stackOverflowBaseURL().isBlank() ? "https://api.stackexchange.com" : appConfig.stackOverflowBaseURL())
                 .build();
         HttpServiceProxyFactory factory =  HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
         return factory.createClient(StackOverflowClient.class);

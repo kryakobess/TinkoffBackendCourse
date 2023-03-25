@@ -2,7 +2,7 @@ package bot.DTOs.requests;
 
 import java.util.List;
 
-public record LinkUpdate(
+public record LinkUpdateRequest(
         int id,
         String url,
         String description,

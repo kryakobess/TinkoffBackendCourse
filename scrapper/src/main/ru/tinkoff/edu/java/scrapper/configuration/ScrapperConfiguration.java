@@ -9,4 +9,5 @@ public class ScrapperConfiguration {
     public String schedulerIntervalMs(ApplicationConfig config) {
         return String.valueOf(config.scheduler().interval().toMillis());
     }
+
 }

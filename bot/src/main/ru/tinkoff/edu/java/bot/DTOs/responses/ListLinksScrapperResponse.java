@@ -5,8 +5,8 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record ListLinksResponse(
+public record ListLinksScrapperResponse(
         int size,
-        List<LinkResponse> links
+        List<LinkScrapperResponse> links
 ) {
 }

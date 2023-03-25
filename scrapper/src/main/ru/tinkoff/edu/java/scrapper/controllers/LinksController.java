@@ -37,24 +37,31 @@ public class LinksController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addNewLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody AddLinkRequest addLinkRequest){
+    public LinkResponse addNewLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody AddLinkRequest addLinkRequest){
         if (!chatLinkRepository.linksMap.containsKey(tgChatId)) {
             throw new ScrapperBadRequestException("ChatID " + tgChatId + " have not been registered");
         }
         if (!chatLinkRepository.linksMap.get(tgChatId).contains(addLinkRequest.link())){
             chatLinkRepository.linksMap.get(tgChatId).add(addLinkRequest.link());
+            return LinkResponse.builder()
+                    .id(tgChatId)
+                    .url(addLinkRequest.link())
+                    .build();
         }
         else throw new ScrapperBadRequestException("Link " + addLinkRequest.link() + "already exists");
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public void deleteLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody RemoveLinkRequest removeLinkRequest){
+    public LinkResponse deleteLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody RemoveLinkRequest removeLinkRequest){
         if (!chatLinkRepository.linksMap.containsKey(tgChatId)) {
             throw new ScrapperBadRequestException("ChatID " + tgChatId + " have not been registered");
         }
         if (chatLinkRepository.linksMap.get(tgChatId).remove(removeLinkRequest.link())){
-            return;
+            return LinkResponse.builder()
+                    .id(tgChatId)
+                    .url(removeLinkRequest.link())
+                    .build();
         }
         else throw new ScrapperNotFoundException("There is no " + removeLinkRequest.link() + " to delete");
     }

@@ -9,6 +9,9 @@ public interface Command {
     String getDescription();
     SendMessage handle(Update update);
 
+    default boolean isCalledInUpdate(Update update){
+        return update.message().text().equals(getCommand());
+    }
     default BotCommand getBotCommand(){
         return new BotCommand(getCommand(), getDescription());
     }

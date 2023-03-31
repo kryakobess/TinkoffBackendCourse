@@ -2,53 +2,42 @@ package bot.services.TelegramBot.commands;
 
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class CommandFactory {
-    Command[] commands = {
-            new StartCommand(),
-            new HelpCommand(),
-            new ListCommand(),
-            new TrackCommand(),
-            new UntrackCommand()
-    };
+    final StartCommand startCommand;
+    final HelpCommand helpCommand;
+    final ListCommand listCommand;
+    final TrackCommand trackCommand;
+    final UntrackCommand untrackCommand;
+    final UndefinedCommand undefinedCommand;
+
+    List<Command> commands;
+
+    public CommandFactory(StartCommand startCommand, HelpCommand helpCommand, ListCommand listCommand, TrackCommand trackCommand, UntrackCommand untrackCommand, UndefinedCommand undefinedCommand) {
+        this.startCommand = startCommand;
+        this.helpCommand = helpCommand;
+        this.listCommand = listCommand;
+        this.trackCommand = trackCommand;
+        this.untrackCommand = untrackCommand;
+        this.undefinedCommand = undefinedCommand;
+        this.commands = List.of(startCommand, helpCommand, listCommand, trackCommand, untrackCommand, undefinedCommand);
+    }
 
     public BotCommand[] getAllBotCommands(){
-        return Arrays.stream(commands).map(Command::getBotCommand).toArray(BotCommand[]::new);
+        return commands.stream().map(Command::getBotCommand).toArray(BotCommand[]::new);
     }
 
-    public Command getAppropriateCommandForMessageText(Update update){
-        String text = update.message().text();
-        switch (text){
-            case "/start" ->{return new StartCommand();}
-            case "/help" -> {return new HelpCommand();}
-            case "/track" -> {return new TrackCommand();}
-            case "/untrack" -> {return new UntrackCommand();}
-            case "/list" -> {return new ListCommand();}
-            default -> {return checkUnknownMessageAndGetCommand(update);}
+    public SendMessage sendMessageForCommandFromUpdate(Update update){
+        for (Command command : commands){
+            if (command.isCalledInUpdate(update)){
+                return command.handle(update);
+            }
         }
-    }
-
-    private Command checkUnknownMessageAndGetCommand(Update update){
-        if (isReplyForTrackCommand(update)){
-            return new TrackCommand();
-        }
-        else if (isReplyForUntrackCommand(update)){
-            return new UntrackCommand();
-        }
-        else {
-            return new UndefinedCommand();
-        }
-    }
-
-    private boolean isReplyForTrackCommand(Update update){
-        return new TrackCommand().isReplyToMessage(update);
-    }
-
-    private boolean isReplyForUntrackCommand(Update update){
-        return new UntrackCommand().isReplyToMessage(update);
+        return undefinedCommand.handle(update);
     }
 }

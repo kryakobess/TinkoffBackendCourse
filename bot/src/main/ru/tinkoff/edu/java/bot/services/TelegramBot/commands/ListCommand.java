@@ -3,14 +3,20 @@ package bot.services.TelegramBot.commands;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
+@Component
 public class ListCommand implements Command {
 
-    private List<String> links = new ArrayList<>();
+    List<String> links = new ArrayList<>();
+
+    public ListCommand(){
+
+    }
 
     @Override
     public String getCommand() {

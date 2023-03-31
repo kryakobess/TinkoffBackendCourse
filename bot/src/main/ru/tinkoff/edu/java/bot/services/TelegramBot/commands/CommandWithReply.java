@@ -17,4 +17,9 @@ public abstract class CommandWithReply implements Command{
     public boolean isReplyToMessage(Update update){
         return update.message().replyToMessage() != null && update.message().replyToMessage().text().equals(getMessageToReply());
     }
+
+    @Override
+    public boolean isCalledInUpdate(Update update) {
+        return isReplyToMessage(update) || isOriginalCommand(update);
+    }
 }

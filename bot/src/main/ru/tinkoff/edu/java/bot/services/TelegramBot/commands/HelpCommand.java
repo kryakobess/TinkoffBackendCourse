@@ -3,8 +3,10 @@ package bot.services.TelegramBot.commands;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class HelpCommand implements Command{
 
     private static String HELP_MESSAGE = """

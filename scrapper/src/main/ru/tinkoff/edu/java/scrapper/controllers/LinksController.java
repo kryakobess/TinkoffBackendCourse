@@ -1,6 +1,5 @@
 package scrapper.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,7 @@ public class LinksController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ListLinksResponse getAllLinks(@RequestParam("Tg-Chat-Id") int tgChatId){
+    public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") int tgChatId){
         if (!chatLinkRepository.linksMap.containsKey(tgChatId)){
             throw new ScrapperBadRequestException("ChatID " + tgChatId + " have not been registered");
         }
@@ -42,7 +41,7 @@ public class LinksController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LinkResponse addNewLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody AddLinkRequest addLinkRequest) {
+    public LinkResponse addNewLink(@RequestHeader("Tg-Chat-Id") int tgChatId, @RequestBody AddLinkRequest addLinkRequest) {
         if (!isValidURL(addLinkRequest.link())) {
             throw new ScrapperBadRequestException(addLinkRequest.link() + " is not URL format");
         }
@@ -61,7 +60,7 @@ public class LinksController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public LinkResponse deleteLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody RemoveLinkRequest removeLinkRequest){
+    public LinkResponse deleteLink(@RequestHeader("Tg-Chat-Id") int tgChatId, @RequestBody RemoveLinkRequest removeLinkRequest){
         if (!isValidURL(removeLinkRequest.link())) {
             throw new ScrapperBadRequestException(removeLinkRequest.link() + " is not URL format");
         }

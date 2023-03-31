@@ -28,6 +28,6 @@ public final class StackOverflowHandler extends AbstractHandler{
             }
             return null;
         }
-        return nextHandler.handle(url);
+        return nextHandler != null ? nextHandler.handle(url) : null;
     }
 }

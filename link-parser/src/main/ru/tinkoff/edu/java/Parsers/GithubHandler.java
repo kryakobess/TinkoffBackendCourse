@@ -28,6 +28,6 @@ public final class GithubHandler extends AbstractHandler{
             }
             else return null;
         }
-        return nextHandler.handle(url);
+        return nextHandler != null ? nextHandler.handle(url) : null;
     }
 }

@@ -12,15 +12,15 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -31,7 +31,7 @@ import static org.springframework.util.Assert.isInstanceOf;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class LinkNotifierBotForListCommand {
+public class LinkNotifierBotCommandsIntegrationalTest {
     @SpyBean
     ListCommandMock listCommandMock;
 
@@ -71,7 +71,6 @@ public class LinkNotifierBotForListCommand {
         when(chat.id()).thenReturn(chatId);
         when(message.chat()).thenReturn(chat);
         when(update.message()).thenReturn(message);
-        when(update.message().text()).thenReturn("/list");
     }
 
     @Test
@@ -79,7 +78,9 @@ public class LinkNotifierBotForListCommand {
         //given
         String emptyListMessage = "You do not have any links in subscription";
         ListCommand listCommand = listCommandMock.getListCommand();
+
         //when
+        when(update.message().text()).thenReturn("/list");
         bot.handle(update);
 
         //then
@@ -100,6 +101,7 @@ public class LinkNotifierBotForListCommand {
         String expectedMessage = String.join("\n\n", links);
 
         //when
+        when(update.message().text()).thenReturn("/list");
         bot.handle(update);
 
         //then
@@ -108,6 +110,25 @@ public class LinkNotifierBotForListCommand {
                 () -> verify(bot.commandFactory).sendMessageForCommandFromUpdate(update),
                 () -> verify(listCommand).handle(update),
                 () -> verify(bot.telegramBot).execute(argThat(new RequestMatcher(expectedMessage)))
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"unknown", "command", "gets", "unknown mesage"})
+    public void undefinedCommand_CheckUnknownCommandMessage(String commandText){
+        //given
+        String unknownCommandMessage = "Unknown command";
+
+        //when
+        when(update.message().text()).thenReturn(commandText);
+
+        //then
+        bot.handle(update);
+
+        assertAll(
+                () -> verify(bot).handle(update),
+                () -> verify(bot.commandFactory).sendMessageForCommandFromUpdate(update),
+                () -> verify(bot.telegramBot).execute(argThat(new RequestMatcher(unknownCommandMessage)))
         );
     }
 

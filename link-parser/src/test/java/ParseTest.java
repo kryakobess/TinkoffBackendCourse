@@ -39,4 +39,17 @@ public class ParseTest {
         Parsable res = LinkParser.parse("https://habr.com/ru/post/444982/");
         Assert.assertNull(res);
     }
+
+    @Test
+    public void NotLink_IncorrectTest() throws MalformedURLException {
+        try {
+            Parsable res = LinkParser.parse("something");
+        } catch (MalformedURLException exception) {
+            Assert.assertTrue(true);
+            return;
+        }
+        Assert.fail();
+    }
+
+
 }

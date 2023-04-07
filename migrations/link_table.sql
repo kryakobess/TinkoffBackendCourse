@@ -1,3 +1,6 @@
+--liquibase formatted sql
+
+--changeset nvoxland:1
 CREATE TABLE link_subscription
 (
     id BIGSERIAL PRIMARY KEY,

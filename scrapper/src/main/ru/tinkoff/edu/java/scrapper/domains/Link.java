@@ -15,4 +15,10 @@ public class Link {
     Long tgUserId;
     String link;
     Timestamp lastUpdate;
+
+    public Link(Long tgUserId, String link, Timestamp lastUpdate) {
+        this.tgUserId = tgUserId;
+        this.link = link;
+        this.lastUpdate = lastUpdate;
+    }
 }

@@ -8,7 +8,7 @@ import scrapper.domains.Link;
 import java.util.List;
 
 @Repository
-public class JdbcLinkDao implements Dao<Link> {
+public class JdbcLinkDao{
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -16,23 +16,25 @@ public class JdbcLinkDao implements Dao<Link> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
+
     public List<Link> getAll() {
         return jdbcTemplate.query("SELECT * FROM link_subscription", new DataClassRowMapper<>(Link.class));
     }
 
-    @Override
-    public void add(Link link) {
-        jdbcTemplate.update("INSERT INTO link_subscription VALUES (?, ?, ?, ?)",
-                link.getId(), link.getTgUserId(), link.getLink(), link.getLastUpdate());
+    public List<Link> getAllByTgUserId(Long chatId){
+        return jdbcTemplate.query("SELECT * FROM link_subscription WHERE tguserid=?", new Object[]{chatId}, new DataClassRowMapper<>(Link.class));
     }
 
-    @Override
-    public void remove(Long id) {
-        jdbcTemplate.update("DELETE FROM link_subscription WHERE id=?", id);
+
+    public Link add(Link link) {
+        return jdbcTemplate.queryForObject("INSERT INTO link_subscription VALUES (nextval('link_subscription_id_seq'), ?, ?, ?) returning *",
+                    new Object[] {link.getTgUserId(), link.getLink(), link.getLastUpdate()}, new DataClassRowMapper<>(Link.class));
     }
 
-    public void removeByLink(String url){
-        jdbcTemplate.update("DELETE FROM link_subscription WHERE link=?", url);
+    public Link removeByLinkAndTgUserId(String url, Long chatId){
+        var queryResult = jdbcTemplate.query("DELETE FROM link_subscription WHERE link=? and tguserid=? returning *",
+                new Object[]{url, chatId}, new DataClassRowMapper<>(Link.class));
+        if (queryResult.isEmpty()) return null;
+        else return queryResult.get(0);
     }
 }

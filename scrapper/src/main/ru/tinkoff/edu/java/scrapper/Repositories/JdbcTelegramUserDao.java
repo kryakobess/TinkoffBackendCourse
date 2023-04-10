@@ -8,7 +8,7 @@ import scrapper.domains.TelegramUser;
 import java.util.List;
 
 @Repository
-public class JdbcTelegramUserDao implements Dao<TelegramUser> {
+public class JdbcTelegramUserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -16,22 +16,31 @@ public class JdbcTelegramUserDao implements Dao<TelegramUser> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
+
     public List<TelegramUser> getAll() {
         return jdbcTemplate.query("SELECT * FROM tg_user", new DataClassRowMapper<>(TelegramUser.class));
     }
 
-    @Override
-    public void add(TelegramUser telegramUser) {
-        jdbcTemplate.update("INSERT INTO tg_user VALUES (?, ?, ?)", telegramUser.getId(), telegramUser.getChatId(), telegramUser.getUserName());
+    public TelegramUser getByChatId(Long chatId){
+        var queryResult = jdbcTemplate.query("SELECT * FROM tg_user WHERE chat_id=?",
+                new Object[]{chatId}, new DataClassRowMapper<>(TelegramUser.class));
+        if (queryResult.isEmpty()) return null;
+        else {
+            return queryResult.get(0);
+        }
     }
 
-    @Override
-    public void remove(Long id) {
-        jdbcTemplate.update("DELETE FROM tg_user WHERE id=?", id);
+    public TelegramUser add(TelegramUser telegramUser) {
+        return jdbcTemplate.queryForObject("INSERT INTO tg_user VALUES (nextval('tg_user_id_seq'), ?) returning *",
+                new Object[]{telegramUser.getChatId()}, new DataClassRowMapper<>(TelegramUser.class));
     }
 
-    public void removeByChatId(Long chatId) {
-        jdbcTemplate.update("DELETE FROM tg_user WHERE chat_id=?", chatId);
+    public TelegramUser removeByChatId(Long chatId) {
+        var queryResult = jdbcTemplate.query("DELETE FROM tg_user WHERE chat_id=? returning *", new Object[]{chatId},
+                new DataClassRowMapper<>(TelegramUser.class));
+        if (queryResult.isEmpty()) return null;
+        else {
+            return queryResult.get(0);
+        }
     }
 }

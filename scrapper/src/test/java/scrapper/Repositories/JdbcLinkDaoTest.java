@@ -1,10 +1,7 @@
 package scrapper.Repositories;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -13,11 +10,10 @@ import scrapper.IntegrationEnvironment;
 import scrapper.domains.Link;
 import scrapper.domains.TelegramUser;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -32,44 +28,48 @@ class JdbcLinkDaoTest extends IntegrationEnvironment {
     @Autowired
     public JdbcTelegramUserDao jdbcTelegramUserDao;
 
+    private final List<TelegramUser> users = new ArrayList<>();
+
     private static final Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")).withNano(0));
 
     @BeforeEach
     @Transactional
     @Rollback
     public void addSomeUsersInUsersDb(){
-        List<TelegramUser> users = List.of(
-                new TelegramUser(1L, 999L, "u1"),
-                new TelegramUser(2L, 899L, "u2"),
-                new TelegramUser(3L, 1331L, "u3"));
+        users.add(new TelegramUser(1L, 999L));
+        users.add(new TelegramUser(2L, 899L));
+        users.add( new TelegramUser(3L, 1331L));
 
-        for (var u : users){
-            jdbcTelegramUserDao.add(u);
+        for (int i = 0; i < users.size(); ++i){
+            users.set(i, jdbcTelegramUserDao.add(users.get(i)));
         }
     }
 
     private static Stream<Link> getTestLinks(){
         return Stream.of(
-                new Link(1L, 3L, "https://stackoverflow.com/questions/3323618/handling-mysql-datetimes-and-timestamps-in-java", timestamp),
-                new Link(2L, 3L, "https://www.baeldung.com/spring-jdbc-jdbctemplate", timestamp),
-                new Link(3L, 1L, "https://stackoverflow.com/questions/75510595/cannot-detect-liquibase-log-file-liquibase-failed-to-start-because-no-changelog", timestamp)
+
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("getTestLinks")
+    @Test
     @Transactional
     @Rollback
-    void addLinksToExistingUsers(Link link) {
+    void addLinksToExistingUsers() {
         //given
-        jdbcLinkDao.add(link);
+        var l1 = new Link(1L, users.get(0).getId(), "https://stackoverflow.com/questions/3323618/handling-mysql-datetimes-and-timestamps-in-java", timestamp);
+        var l2 = new Link(2L, users.get(2).getId(), "https://www.baeldung.com/spring-jdbc-jdbctemplate", timestamp);
+        var l3 = new Link(3L, users.get(2).getId(), "https://stackoverflow.com/questions/75510595/cannot-detect-liquibase-log-file-liquibase-failed-to-start-because-no-changelog", timestamp);
+        jdbcLinkDao.add(l1);
+        jdbcLinkDao.add(l2);
+        jdbcLinkDao.add(l3);
 
         //when
         List<Link> res = jdbcLinkDao.getAll();
 
-        System.out.println(res.get(0));
         //then
-        assertEquals(link, res.get(0));
+        assertEquals(l1, res.get(0));
+        assertEquals(l2, res.get(1));
+        assertEquals(l3, res.get(2));
     }
 
     @Test
@@ -90,21 +90,58 @@ class JdbcLinkDaoTest extends IntegrationEnvironment {
         fail();
     }
 
-    @ParameterizedTest
-    @MethodSource("getTestLinks")
+    @Test
     @Transactional
     @Rollback
-    void removeLinkByURL(Link link) {
+    void removeLinkByURLOrId() {
         //given
-        jdbcLinkDao.add(link);
+        var l1 = new Link(1L, users.get(0).getId(), "https://www.baeldung.com/spring-jdbc-jdbctemplate", timestamp);
+        var l2 = new Link(2L, users.get(2).getId(), "https://www.baeldung.com/spring-jdbc-jdbctemplate", timestamp);
+        var l3 = new Link(3L, users.get(2).getId(), "https://stackoverflow.com/questions/75510595/cannot-detect-liquibase-log-file-liquibase-failed-to-start-because-no-changelog", timestamp);
+        jdbcLinkDao.add(l1);
+        jdbcLinkDao.add(l2);
+        jdbcLinkDao.add(l3);
 
         //when
         List<Link> res = jdbcLinkDao.getAll();
         assertFalse(res.isEmpty());
-        jdbcLinkDao.removeByLink(link.getLink());
+        jdbcLinkDao.removeByLinkAndTgUserId(l1.getLink(), users.get(0).getId());
+        jdbcLinkDao.removeByLinkAndTgUserId(l2.getLink(), users.get(2).getId());
+        jdbcLinkDao.removeByLinkAndTgUserId(l3.getLink(), users.get(2).getId());
         res = jdbcLinkDao.getAll();
 
         //then
         assertTrue(res.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void getAllByChatId(){
+        //given
+        var l1 = new Link(1L, users.get(0).getId(), "https://stackoverflow.com/questions/3323618/handling-mysql-datetimes-and-timestamps-in-java", timestamp);
+        var l2 = new Link(2L, users.get(2).getId(), "https://www.baeldung.com/spring-jdbc-jdbctemplate", timestamp);
+        var l3 = new Link(3L, users.get(2).getId(), "https://stackoverflow.com/questions/75510595/cannot-detect-liquibase-log-file-liquibase-failed-to-start-because-no-changelog", timestamp);
+        jdbcLinkDao.add(l1);
+        jdbcLinkDao.add(l2);
+        jdbcLinkDao.add(l3);
+
+        //when
+        List<Link> res = jdbcLinkDao.getAllByTgUserId(users.get(2).getId());
+
+        //then
+        assertEquals(res.size(),2);
+        assertEquals(res.get(0).getLink(), l2.getLink());
+        assertEquals(res.get(0).getTgUserId(), l2.getTgUserId());
+        assertEquals(res.get(1).getLink(), l3.getLink());
+        assertEquals(res.get(1).getTgUserId(), l3.getTgUserId());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void removeUnknownLink(){
+        //given
+        assertNull(jdbcLinkDao.removeByLinkAndTgUserId("https://www.baeldung.com/java-optional", 123L));
     }
 }

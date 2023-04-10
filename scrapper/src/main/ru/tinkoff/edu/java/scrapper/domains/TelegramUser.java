@@ -11,5 +11,8 @@ import lombok.*;
 public class TelegramUser {
     Long id;
     Long chatId;
-    String userName;
+
+    public TelegramUser(Long chatId) {
+        this.chatId = chatId;
+    }
 }

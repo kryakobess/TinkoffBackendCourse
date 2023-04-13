@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import scrapper.services.GitHubClient;
 import scrapper.services.StackOverflowClient;
+import scrapper.services.TelegramBotClient;
 
 @Configuration
 public class ClientConfiguration {
@@ -26,5 +27,14 @@ public class ClientConfiguration {
                 .build();
         HttpServiceProxyFactory factory =  HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
         return factory.createClient(StackOverflowClient.class);
+    }
+
+    @Bean
+    TelegramBotClient telegramBotClient(ApplicationConfig appConfig){
+        WebClient webClient = WebClient.builder()
+                .baseUrl(appConfig.telegramBotBaseURL().isBlank() ? "localhost:8081" : appConfig.telegramBotBaseURL())
+                .build();
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
+        return factory.createClient(TelegramBotClient.class);
     }
 }

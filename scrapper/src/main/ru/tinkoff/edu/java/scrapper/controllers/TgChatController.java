@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Repositories.ChatLinkRepository;
+import scrapper.services.LinkService;
+import scrapper.services.TgUserService;
+import scrapper.services.jdbc.JdbcLinkService;
 
 import java.util.HashSet;
 
@@ -11,31 +14,21 @@ import java.util.HashSet;
 @RequestMapping("/tg-chat")
 public class TgChatController {
 
-    private final ChatLinkRepository chatLinkRepository;
+    final TgUserService tgUserService;
 
-    public TgChatController(ChatLinkRepository chatLinkRepository) {
-        this.chatLinkRepository = chatLinkRepository;
+    public TgChatController(TgUserService tgUserService) {
+        this.tgUserService = tgUserService;
     }
 
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void registerChat(@PathVariable int id){
-        if (chatLinkRepository.linksMap.containsKey(id)){
-            throw new ScrapperBadRequestException("Chat with id" + id + " already exists");
-        }
-        else {
-            chatLinkRepository.linksMap.put(id, new HashSet<>());
-        }
+    public void registerChat(@PathVariable long id){
+       tgUserService.register(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteChat(@PathVariable int id){
-        if (!chatLinkRepository.linksMap.containsKey(id)){
-            throw new ScrapperBadRequestException("Chat with id" + id + " have not been registered yet");
-        }
-        else {
-            chatLinkRepository.linksMap.remove(id);
-        }
+    public void deleteChat(@PathVariable long id){
+        tgUserService.delete(id);
     }
 }

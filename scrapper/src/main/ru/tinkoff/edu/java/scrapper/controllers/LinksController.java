@@ -1,6 +1,5 @@
 package scrapper.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import scrapper.DTOs.requests.AddLinkRequest;
@@ -8,61 +7,61 @@ import scrapper.DTOs.requests.RemoveLinkRequest;
 import scrapper.DTOs.responses.LinkResponse;
 import scrapper.DTOs.responses.ListLinksResponse;
 import scrapper.Exceptions.ScrapperBadRequestException;
-import scrapper.Exceptions.ScrapperNotFoundException;
-import scrapper.Repositories.ChatLinkRepository;
+import scrapper.services.LinkService;
+import scrapper.services.jdbc.JdbcLinkService;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/links")
 public class LinksController {
-    private final ChatLinkRepository chatLinkRepository;
+    final LinkService linkService;
 
-    public LinksController(ChatLinkRepository chatLinkRepository) {
-        this.chatLinkRepository = chatLinkRepository;
+    public LinksController(JdbcLinkService linkService) {
+        this.linkService = linkService;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ListLinksResponse getAllLinks(@RequestParam("Tg-Chat-Id") int tgChatId){
-        if (!chatLinkRepository.linksMap.containsKey(tgChatId)){
-            throw new ScrapperBadRequestException("ChatID " + tgChatId + " have not been registered");
-        }
+    public ListLinksResponse getAllLinks(@RequestParam("Tg-Chat-Id") long tgChatId){
+        var links = linkService.getAll(tgChatId);
         return ListLinksResponse.builder()
-                .links(chatLinkRepository.linksMap.get(tgChatId).stream()
-                        .map((el) -> new LinkResponse(tgChatId, el)).collect(Collectors.toList()))
-                .size(chatLinkRepository.linksMap.get(tgChatId).size())
+                .size(links.size())
+                .links(links.stream()
+                        .map((link -> new LinkResponse(Math.toIntExact(link.getId()), link.getLink())))
+                        .collect(Collectors.toList()))
                 .build();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LinkResponse addNewLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody AddLinkRequest addLinkRequest){
-        if (!chatLinkRepository.linksMap.containsKey(tgChatId)) {
-            throw new ScrapperBadRequestException("ChatID " + tgChatId + " have not been registered");
-        }
-        if (!chatLinkRepository.linksMap.get(tgChatId).contains(addLinkRequest.link())){
-            chatLinkRepository.linksMap.get(tgChatId).add(addLinkRequest.link());
+    public LinkResponse addNewLink(@RequestParam("Tg-Chat-Id") long tgChatId, @RequestBody AddLinkRequest addLinkRequest){
+        try {
+            var newLink = linkService.add(tgChatId, new URL(addLinkRequest.link()).toURI());
             return LinkResponse.builder()
-                    .id(tgChatId)
-                    .url(addLinkRequest.link())
+                    .id(Math.toIntExact(newLink.getId()))
+                    .url(newLink.getLink())
                     .build();
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new ScrapperBadRequestException(e.getMessage());
         }
-        else throw new ScrapperBadRequestException("Link " + addLinkRequest.link() + "already exists");
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public LinkResponse deleteLink(@RequestParam("Tg-Chat-Id") int tgChatId, @RequestBody RemoveLinkRequest removeLinkRequest){
-        if (!chatLinkRepository.linksMap.containsKey(tgChatId)) {
-            throw new ScrapperBadRequestException("ChatID " + tgChatId + " have not been registered");
-        }
-        if (chatLinkRepository.linksMap.get(tgChatId).remove(removeLinkRequest.link())){
+    public LinkResponse deleteLink(@RequestParam("Tg-Chat-Id") long tgChatId,  @RequestBody RemoveLinkRequest removeLinkRequest){
+        try {
+            var link = linkService.remove(tgChatId, new URL(removeLinkRequest.link()).toURI());
             return LinkResponse.builder()
-                    .id(tgChatId)
-                    .url(removeLinkRequest.link())
+                    .id(Math.toIntExact(link.getId()))
+                    .url(link.getLink())
                     .build();
+        } catch (MalformedURLException | URISyntaxException ex){
+            throw new ScrapperBadRequestException(ex.getMessage());
         }
-        else throw new ScrapperNotFoundException("There is no " + removeLinkRequest.link() + " to delete");
     }
 }

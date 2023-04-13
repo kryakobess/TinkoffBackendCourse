@@ -21,8 +21,8 @@ public class JdbcLinkDao{
         return jdbcTemplate.query("SELECT * FROM link_subscription", new DataClassRowMapper<>(Link.class));
     }
 
-    public List<Link> getAllByTgUserId(Long chatId){
-        return jdbcTemplate.query("SELECT * FROM link_subscription WHERE tguserid=?", new Object[]{chatId}, new DataClassRowMapper<>(Link.class));
+    public List<Link> getAllByTgUserId(Long userId){
+        return jdbcTemplate.query("SELECT * FROM link_subscription WHERE tguserid=?", new Object[]{userId}, new DataClassRowMapper<>(Link.class));
     }
 
 
@@ -31,10 +31,16 @@ public class JdbcLinkDao{
                     new Object[] {link.getTgUserId(), link.getLink(), link.getLastUpdate()}, new DataClassRowMapper<>(Link.class));
     }
 
-    public Link removeByLinkAndTgUserId(String url, Long chatId){
+    public Link removeByLinkAndTgUserId(String url, Long userId){
         var queryResult = jdbcTemplate.query("DELETE FROM link_subscription WHERE link=? and tguserid=? returning *",
-                new Object[]{url, chatId}, new DataClassRowMapper<>(Link.class));
+                new Object[]{url, userId}, new DataClassRowMapper<>(Link.class));
         if (queryResult.isEmpty()) return null;
         else return queryResult.get(0);
+    }
+
+    public List<Link> removeAllWithTgUserId(Long userId){
+        var queryResult = jdbcTemplate.query("DELETE FROM link_subscription WHERE tguserid=? returning *",
+                new Object[]{userId}, new DataClassRowMapper<>(Link.class));
+        return queryResult;
     }
 }

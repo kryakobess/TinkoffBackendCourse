@@ -1,9 +1,11 @@
-import Links.GithubLink;
-import Links.Parsable;
-import Links.StackOverflowLink;
-import Parsers.AbstractHandler;
-import Parsers.GithubHandler;
-import Parsers.StackOverflowHandler;
+package LinkParser;
+
+import LinkParser.Links.GithubLink;
+import LinkParser.Links.Parsable;
+import LinkParser.Links.StackOverflowLink;
+import LinkParser.Parsers.AbstractHandler;
+import LinkParser.Parsers.GithubHandler;
+import LinkParser.Parsers.StackOverflowHandler;
 
 import java.net.MalformedURLException;
 import java.net.URL;

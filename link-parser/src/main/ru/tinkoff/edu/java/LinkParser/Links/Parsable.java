@@ -1,4 +1,4 @@
-package Links;
+package LinkParser.Links;
 
 import java.net.URL;
 

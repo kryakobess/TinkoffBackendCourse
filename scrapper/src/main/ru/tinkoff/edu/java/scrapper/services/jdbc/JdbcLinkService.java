@@ -1,6 +1,7 @@
 package scrapper.services.jdbc;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperNotFoundException;
 import scrapper.Repositories.JdbcLinkDao;
 import scrapper.Repositories.JdbcTelegramUserDao;
@@ -24,6 +25,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public Link add(Long chatId, URI url) {
         var tgUser = telegramUserDao.getByChatId(chatId);
         if (tgUser != null){
@@ -34,6 +36,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public Link remove(Long chatId, URI url) {
         var tgUser = telegramUserDao.getByChatId(chatId);
         if (tgUser != null) {
@@ -47,6 +50,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Link> getAll(Long chatId) {
         var tgUser = telegramUserDao.getByChatId(chatId);
         if (tgUser != null){

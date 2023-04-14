@@ -2,6 +2,7 @@ package scrapper.services.jdbc;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Exceptions.ScrapperNotFoundException;
 import scrapper.Repositories.JdbcLinkDao;
@@ -20,6 +21,7 @@ public class JdbcTgUserService implements TgUserService {
     }
 
     @Override
+    @Transactional
     public void register(Long chatId) {
         try {
             userDao.add(new TelegramUser(chatId));
@@ -29,6 +31,7 @@ public class JdbcTgUserService implements TgUserService {
     }
 
     @Override
+    @Transactional
     public void delete(Long chatId) {
         var user = userDao.getByChatId(chatId);
         if (user != null) {

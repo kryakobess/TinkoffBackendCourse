@@ -1,6 +1,7 @@
-import Links.GithubLink;
-import Links.Parsable;
-import Links.StackOverflowLink;
+import LinkParser.LinkParser;
+import LinkParser.Links.GithubLink;
+import LinkParser.Links.Parsable;
+import LinkParser.Links.StackOverflowLink;
 import org.junit.Assert;
 import org.junit.Test;
 

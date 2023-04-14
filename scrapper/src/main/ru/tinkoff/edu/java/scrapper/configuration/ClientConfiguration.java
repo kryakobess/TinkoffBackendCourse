@@ -9,12 +9,15 @@ import scrapper.services.GitHubClient;
 import scrapper.services.StackOverflowClient;
 import scrapper.services.TelegramBotClient;
 
+import java.time.Duration;
+
 @Configuration
 public class ClientConfiguration {
     @Bean
     GitHubClient gitHubClient(ApplicationConfig appConfig){
         WebClient webClient = WebClient.builder()
                 .baseUrl(appConfig.gitHubBaseURL().isBlank() ? "https://api.github.com" : appConfig.gitHubBaseURL())
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1048576))
                 .build();
         HttpServiceProxyFactory factory =  HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
         return factory.createClient(GitHubClient.class);
@@ -25,7 +28,7 @@ public class ClientConfiguration {
         WebClient webClient = WebClient.builder()
                 .baseUrl(appConfig.stackOverflowBaseURL().isBlank() ? "https://api.stackexchange.com" : appConfig.stackOverflowBaseURL())
                 .build();
-        HttpServiceProxyFactory factory =  HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
+        HttpServiceProxyFactory factory =  HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).blockTimeout(Duration.ofSeconds(10, 10)).build();
         return factory.createClient(StackOverflowClient.class);
     }
 

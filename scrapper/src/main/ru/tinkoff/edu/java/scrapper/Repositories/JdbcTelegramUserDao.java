@@ -30,13 +30,22 @@ public class JdbcTelegramUserDao {
         }
     }
 
+    public TelegramUser getById(Long id){
+        var queryResult = jdbcTemplate.query("SELECT * FROM tg_user WHERE id=?",
+                new Object[]{id}, new DataClassRowMapper<>(TelegramUser.class));
+        if (queryResult.isEmpty()) return null;
+        else {
+            return queryResult.get(0);
+        }
+    }
+
     public TelegramUser add(TelegramUser telegramUser) {
         return jdbcTemplate.queryForObject("INSERT INTO tg_user VALUES (nextval('tg_user_id_seq'), ?) returning *",
                 new Object[]{telegramUser.getChatId()}, new DataClassRowMapper<>(TelegramUser.class));
     }
 
     public TelegramUser removeByChatId(Long chatId) {
-        var queryResult = jdbcTemplate.query("DELETE FROM tg_user WHERE chat_id=? returning *", new Object[]{chatId},
+        var queryResult = jdbcTemplate.query("DELETE FROM tg_user  WHERE chat_id=? returning *", new Object[]{chatId},
                 new DataClassRowMapper<>(TelegramUser.class));
         if (queryResult.isEmpty()) return null;
         else {

@@ -43,4 +43,15 @@ public class JdbcLinkDao{
                 new Object[]{userId}, new DataClassRowMapper<>(Link.class));
         return queryResult;
     }
+
+    public Link getLatestUpdatedLink(){
+        var queryRes =  jdbcTemplate.query("SELECT * FROM link_subscription ORDER BY lastupdate LIMIT 1",
+                new DataClassRowMapper<>(Link.class));
+        return queryRes.get(0);
+    }
+
+    public void updateLinkById(Link upd){
+        jdbcTemplate.update("UPDATE link_subscription SET link = ?, lastupdate = ?, tguserid=? WHERE id=?",
+                new Object[]{upd.getLink(), upd.getLastUpdate(), upd.getTgUserId(), upd.getId()}, new DataClassRowMapper<>(Link.class));
+    }
 }

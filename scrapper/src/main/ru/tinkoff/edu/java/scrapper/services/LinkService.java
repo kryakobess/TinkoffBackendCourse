@@ -9,4 +9,7 @@ public interface LinkService {
     Link add(Long chatId, URI url);
     Link remove(Long chatId, URI url);
     List<Link> getAll(Long chatId);
+    Link getLatestUpdatedLink();
+
+    void updateLinkById(Link linkWithUpdates);
 }

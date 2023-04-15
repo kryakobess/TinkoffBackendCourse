@@ -25,6 +25,12 @@ public class JdbcLinkDao{
         return jdbcTemplate.query("SELECT * FROM link_subscription WHERE tguserid=?", new Object[]{userId}, new DataClassRowMapper<>(Link.class));
     }
 
+    public Link getLinkById(Long id){
+        var res =  jdbcTemplate.query("SELECT * FROM link_subscription WHERE id=?",
+                new Object[]{id}, new DataClassRowMapper<>(Link.class));
+        if (res.isEmpty()) return null;
+        return res.get(0);
+    }
 
     public Link add(Link link) {
         return jdbcTemplate.queryForObject("INSERT INTO link_subscription VALUES (nextval('link_subscription_id_seq'), ?, ?, ?) returning *",
@@ -44,10 +50,9 @@ public class JdbcLinkDao{
         return queryResult;
     }
 
-    public Link getLatestUpdatedLink(){
-        var queryRes =  jdbcTemplate.query("SELECT * FROM link_subscription ORDER BY lastupdate LIMIT 1",
+    public List<Link> getAllLinksOrderByLastUpdate(){
+        return jdbcTemplate.query("SELECT * FROM link_subscription ORDER BY lastupdate",
                 new DataClassRowMapper<>(Link.class));
-        return queryRes.get(0);
     }
 
     public void updateLinkById(Link upd){

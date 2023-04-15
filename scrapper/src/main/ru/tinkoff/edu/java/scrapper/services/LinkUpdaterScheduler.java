@@ -8,16 +8,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.DTOs.requests.TgBotLinkUpdateRequest;
-import scrapper.DTOs.responses.SOCommentResponse;
 import scrapper.DTOs.responses.SOItemsDescriptionInterface;
-import scrapper.Repositories.JdbcLinkDao;
-import scrapper.Repositories.JdbcTelegramUserDao;
 
 import scrapper.domains.Link;
 
 import java.net.URI;
 import java.net.URL;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -29,26 +25,28 @@ public class LinkUpdaterScheduler {
 
     final GitHubClient gitHubClient;
     final StackOverflowClient stackOverflowClient;
-    final JdbcLinkDao linkDao;
-    final JdbcTelegramUserDao userDao;
+    final LinkService linkService;
+    final TgUserService tgUserService;
 
     final TelegramBotClient botClient;
 
     private static final int EVENTS_TO_CHECK_COUNT = 15;
 
-    public LinkUpdaterScheduler(GitHubClient gitHubClient, StackOverflowClient stackOverflowClient, JdbcLinkDao linkDao, JdbcTelegramUserDao userDao, TelegramBotClient botClient) {
+    public LinkUpdaterScheduler(GitHubClient gitHubClient, StackOverflowClient stackOverflowClient, LinkService linkService, TgUserService tgUserService, TelegramBotClient botClient) {
         this.gitHubClient = gitHubClient;
         this.stackOverflowClient = stackOverflowClient;
-        this.linkDao = linkDao;
-        this.userDao = userDao;
+        this.linkService = linkService;
+        this.tgUserService = tgUserService;
         this.botClient = botClient;
     }
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
     public void update(){
-        var link = linkDao.getLatestUpdatedLink();
-        if (link != null){
+        try {
+            var link = linkService.getLatestUpdatedLink();
             checkForUpdates(link);
+        } catch (Exception e){
+            log.info(e.getMessage());
         }
     }
 
@@ -64,7 +62,6 @@ public class LinkUpdaterScheduler {
         }
     }
 
-    @Transactional
     void processGitHubUpdates(String owner, String repo, Link dbData) {
         var events = gitHubClient.getRepoData(owner, repo);
         if (events != null) {
@@ -76,11 +73,14 @@ public class LinkUpdaterScheduler {
                 }
             }
         }
-        dbData.setLastUpdate(Timestamp.from(Instant.now()));
-        linkDao.updateLinkById(dbData);
+        try {
+            dbData.setLastUpdate(Timestamp.from(Instant.now()));
+            linkService.updateLinkById(dbData);
+        } catch (Exception e){
+            log.info(e.getMessage());
+        }
     }
 
-    @Transactional
     void processStackOverflowUpdates(long questionId, Link dbData){
         var comments = stackOverflowClient.getQuestionComments(questionId);
         var answers = stackOverflowClient.getQuestionAnswers(questionId);
@@ -92,8 +92,12 @@ public class LinkUpdaterScheduler {
         if (!description.toString().isBlank()){
             sendUpdateToBot(dbData, description.toString());
         }
-        dbData.setLastUpdate(Timestamp.from(Instant.now()));
-        linkDao.updateLinkById(dbData);
+        try {
+            dbData.setLastUpdate(Timestamp.from(Instant.now()));
+            linkService.updateLinkById(dbData);
+        } catch (Exception e){
+            log.info(e.getMessage());
+        }
     }
 
     String getItemsDescription(SOItemsDescriptionInterface items, Link dbData){
@@ -114,14 +118,18 @@ public class LinkUpdaterScheduler {
     }
 
     private void sendUpdateToBot(Link dbData, String description){
-        var user = userDao.getById(dbData.getTgUserId());
-        botClient.sendUpdate(
-                TgBotLinkUpdateRequest.builder()
-                        .id(Math.toIntExact(dbData.getId()))
-                        .description(description)
-                        .url(URI.create(dbData.getLink()))
-                        .tgChatIds(List.of(Math.toIntExact(user.getChatId())))
-                        .build()
-        );
+        try {
+            var user = tgUserService.getUserById(dbData.getTgUserId());
+            botClient.sendUpdate(
+                    TgBotLinkUpdateRequest.builder()
+                            .id(Math.toIntExact(dbData.getId()))
+                            .description(description)
+                            .url(URI.create(dbData.getLink()))
+                            .tgChatIds(List.of(Math.toIntExact(user.getChatId())))
+                            .build()
+            );
+        } catch (Exception e){
+            log.info(e.getMessage());
+        }
     }
 }

@@ -42,4 +42,12 @@ public class JdbcTgUserService implements TgUserService {
             throw new ScrapperNotFoundException("User with chatId = " + chatId + " is not registered");
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TelegramUser getUserById(Long id) {
+        var user = userDao.getById(id);
+        if (user == null) throw new ScrapperNotFoundException("There is no user with id = " + id);
+        return user;
+    }
 }

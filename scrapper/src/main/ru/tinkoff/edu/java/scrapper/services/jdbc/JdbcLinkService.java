@@ -2,6 +2,7 @@ package scrapper.services.jdbc;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Exceptions.ScrapperNotFoundException;
 import scrapper.Repositories.JdbcLinkDao;
 import scrapper.Repositories.JdbcTelegramUserDao;
@@ -57,5 +58,24 @@ public class JdbcLinkService implements LinkService {
             return linkDao.getAllByTgUserId(tgUser.getId());
         }
         else throw new ScrapperNotFoundException("ChatId " + chatId + " is not registered");
+    }
+
+    @Override
+    @Transactional
+    public Link getLatestUpdatedLink() {
+        var links = linkDao.getAllLinksOrderByLastUpdate();
+        if (links.isEmpty()) throw new ScrapperBadRequestException("There is no links in data base");
+        else return links.get(0);
+    }
+
+    @Override
+    @Transactional
+    public void updateLinkById(Link linkWithUpdates) {
+        if (linkDao.getLinkById(linkWithUpdates.getId()) != null){
+            linkDao.updateLinkById(linkWithUpdates);
+        } else {
+            throw new ScrapperNotFoundException("There is no link with id = " + linkWithUpdates.getId());
+        }
+
     }
 }

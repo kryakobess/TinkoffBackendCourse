@@ -57,6 +57,6 @@ public class JdbcLinkDao{
 
     public void updateLinkById(Link upd){
         jdbcTemplate.update("UPDATE link_subscription SET link = ?, lastupdate = ?, tguserid=? WHERE id=?",
-                new Object[]{upd.getLink(), upd.getLastUpdate(), upd.getTgUserId(), upd.getId()}, new DataClassRowMapper<>(Link.class));
+                upd.getLink(), upd.getLastUpdate(), upd.getTgUserId(), upd.getId());
     }
 }

@@ -51,6 +51,7 @@ public class LinkUpdaterScheduler {
     }
 
     private void checkForUpdates(Link link) {
+        log.info("Checking for updates of " + link.getLink());
         try {
             var parseResult = LinkParser.parse(new URL(link.getLink()));
             switch (parseResult) {
@@ -63,6 +64,7 @@ public class LinkUpdaterScheduler {
     }
 
     void processGitHubUpdates(String owner, String repo, Link dbData) {
+        log.info("Fetching github events for link " + dbData.getLink());
         var events = gitHubClient.getRepoData(owner, repo);
         if (events != null) {
             for (int i = Math.min(EVENTS_TO_CHECK_COUNT, events.length-1); i >= 0; --i) {
@@ -82,7 +84,9 @@ public class LinkUpdaterScheduler {
     }
 
     void processStackOverflowUpdates(long questionId, Link dbData){
+        log.info("Fetching SO comments from " + dbData.getLink());
         var comments = stackOverflowClient.getQuestionComments(questionId);
+        log.info("Fetching SO answers from " + dbData.getLink());
         var answers = stackOverflowClient.getQuestionAnswers(questionId);
 
         StringBuilder description = new StringBuilder()
@@ -119,6 +123,7 @@ public class LinkUpdaterScheduler {
 
     private void sendUpdateToBot(Link dbData, String description){
         try {
+            log.info("Sending update to bot");
             var user = tgUserService.getUserById(dbData.getTgUserId());
             botClient.sendUpdate(
                     TgBotLinkUpdateRequest.builder()
@@ -128,6 +133,7 @@ public class LinkUpdaterScheduler {
                             .tgChatIds(List.of(Math.toIntExact(user.getChatId())))
                             .build()
             );
+            log.info("Update has been sent to " + user.getChatId());
         } catch (Exception e){
             log.info(e.getMessage());
         }

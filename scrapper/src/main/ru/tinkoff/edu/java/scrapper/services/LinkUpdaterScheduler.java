@@ -6,7 +6,6 @@ import LinkParser.Links.StackOverflowLink;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import scrapper.DTOs.requests.TgBotLinkUpdateRequest;
 import scrapper.DTOs.responses.SOItemsDescriptionInterface;
 
@@ -45,6 +44,8 @@ public class LinkUpdaterScheduler {
         try {
             var link = linkService.getLatestUpdatedLink();
             checkForUpdates(link);
+            link.setLastUpdate(Timestamp.from(Instant.now()));
+            linkService.updateLinkById(link);
         } catch (Exception e){
             log.info(e.getMessage());
         }
@@ -75,12 +76,6 @@ public class LinkUpdaterScheduler {
                 }
             }
         }
-        try {
-            dbData.setLastUpdate(Timestamp.from(Instant.now()));
-            linkService.updateLinkById(dbData);
-        } catch (Exception e){
-            log.info(e.getMessage());
-        }
     }
 
     void processStackOverflowUpdates(long questionId, Link dbData){
@@ -95,12 +90,6 @@ public class LinkUpdaterScheduler {
 
         if (!description.toString().isBlank()){
             sendUpdateToBot(dbData, description.toString());
-        }
-        try {
-            dbData.setLastUpdate(Timestamp.from(Instant.now()));
-            linkService.updateLinkById(dbData);
-        } catch (Exception e){
-            log.info(e.getMessage());
         }
     }
 

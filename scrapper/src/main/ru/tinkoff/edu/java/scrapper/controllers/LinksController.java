@@ -1,6 +1,7 @@
 package scrapper.controllers;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import scrapper.DTOs.requests.AddLinkRequest;
 import scrapper.DTOs.requests.RemoveLinkRequest;
@@ -12,10 +13,12 @@ import scrapper.services.jdbc.JdbcLinkService;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequestMapping("/links")
 public class LinksController {
@@ -62,6 +65,15 @@ public class LinksController {
                     .build();
         } catch (MalformedURLException | URISyntaxException ex){
             throw new ScrapperBadRequestException(ex.getMessage());
+        }
+    }
+
+    private boolean isValidURL(String url) {
+        try {
+            new URL(url).toURI();
+            return true;
+        } catch (MalformedURLException | URISyntaxException e) {
+            return false;
         }
     }
 }

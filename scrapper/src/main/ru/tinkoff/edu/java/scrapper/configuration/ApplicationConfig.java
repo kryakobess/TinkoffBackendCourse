@@ -10,6 +10,7 @@ import java.time.Duration;
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
+
 @EnableScheduling
 public record ApplicationConfig(
         @NotNull
@@ -19,6 +20,7 @@ public record ApplicationConfig(
         String gitHubBaseURL,
         String stackOverflowBaseURL,
         String telegramBotBaseURL) {
+        
     record Scheduler(Duration interval){};
 
 }

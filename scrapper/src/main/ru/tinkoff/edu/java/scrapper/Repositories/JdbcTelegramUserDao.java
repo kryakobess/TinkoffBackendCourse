@@ -8,7 +8,7 @@ import scrapper.domains.TelegramUser;
 import java.util.List;
 
 @Repository
-public class JdbcTelegramUserDao {
+public class JdbcTelegramUserDao implements TelegramUserRepository{
 
     private final JdbcTemplate jdbcTemplate;
 

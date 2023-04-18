@@ -8,7 +8,7 @@ import scrapper.domains.Link;
 import java.util.List;
 
 @Repository
-public class JdbcLinkDao{
+public class JdbcLinkDao implements LinkRepository{
 
     private final JdbcTemplate jdbcTemplate;
 

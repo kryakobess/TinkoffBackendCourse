@@ -10,7 +10,7 @@ import scrapper.Repositories.JdbcTelegramUserDao;
 import scrapper.domains.TelegramUser;
 import scrapper.services.TgUserService;
 
-@Service
+@Service("JdbcTgUserService")
 public class JdbcTgUserService implements TgUserService {
     final JdbcTelegramUserDao userDao;
     final JdbcLinkDao linkDao;

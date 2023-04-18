@@ -4,6 +4,7 @@ import LinkParser.LinkParser;
 import LinkParser.Links.GithubLink;
 import LinkParser.Links.StackOverflowLink;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import scrapper.DTOs.requests.TgBotLinkUpdateRequest;
@@ -31,7 +32,7 @@ public class LinkUpdaterScheduler {
 
     private static final int EVENTS_TO_CHECK_COUNT = 15;
 
-    public LinkUpdaterScheduler(GitHubClient gitHubClient, StackOverflowClient stackOverflowClient, LinkService linkService, TgUserService tgUserService, TelegramBotClient botClient) {
+    public LinkUpdaterScheduler(GitHubClient gitHubClient, StackOverflowClient stackOverflowClient, @Qualifier("JooqLinkService") LinkService linkService, @Qualifier("JooqTgUserService") TgUserService tgUserService, TelegramBotClient botClient) {
         this.gitHubClient = gitHubClient;
         this.stackOverflowClient = stackOverflowClient;
         this.linkService = linkService;

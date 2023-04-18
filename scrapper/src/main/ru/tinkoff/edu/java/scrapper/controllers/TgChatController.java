@@ -1,14 +1,9 @@
 package scrapper.controllers;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import scrapper.Exceptions.ScrapperBadRequestException;
-import scrapper.Repositories.ChatLinkRepository;
-import scrapper.services.LinkService;
 import scrapper.services.TgUserService;
-import scrapper.services.jdbc.JdbcLinkService;
-
-import java.util.HashSet;
 
 @RestController
 @RequestMapping("/tg-chat")
@@ -16,7 +11,7 @@ public class TgChatController {
 
     final TgUserService tgUserService;
 
-    public TgChatController(TgUserService tgUserService) {
+    public TgChatController(@Qualifier("JooqTgUserService") TgUserService tgUserService) {
         this.tgUserService = tgUserService;
     }
 

@@ -1,13 +1,12 @@
 package scrapper.Repositories;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.IntegrationEnvironment;
@@ -19,13 +18,11 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class JdbcTelegramUserDaoTest extends IntegrationEnvironment {
+class TelegramUserRepositoryTest extends IntegrationEnvironment {
 
+    @Qualifier("jooqTelegramUserRepository")
     @Autowired
-    JdbcTelegramUserDao telegramUserDao;
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    TelegramUserRepository telegramUserDao;
 
     public static Stream<TelegramUser> getUsersForTest(){
         return Stream.of(

@@ -1,6 +1,5 @@
 package scrapper.services.jooq;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import scrapper.Exceptions.ScrapperNotFoundException;
 import scrapper.Repositories.JooqLinkRepository;

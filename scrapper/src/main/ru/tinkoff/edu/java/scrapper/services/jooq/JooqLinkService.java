@@ -1,6 +1,7 @@
 package scrapper.services.jooq;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperNotFoundException;
 import scrapper.Repositories.JooqLinkRepository;
 import scrapper.Repositories.JooqTelegramUserRepository;
@@ -25,6 +26,7 @@ public class JooqLinkService implements LinkService {
 
 
     @Override
+    @Transactional
     public Link add(Long chatId, URI url) {
         var user = userRepository.getByChatId(chatId);
         if (user == null) throw new ScrapperNotFoundException("User with chatId =" + chatId + " does not exist");
@@ -32,6 +34,7 @@ public class JooqLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     public Link remove(Long chatId, URI url) {
         var user = userRepository.getByChatId(chatId);
         if (user == null) throw new ScrapperNotFoundException("User with chatId = \" + chatId + \" does not exist");
@@ -41,6 +44,7 @@ public class JooqLinkService implements LinkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Link> getAll(Long chatId) {
         var user = userRepository.getByChatId(chatId);
         if (user == null) throw new ScrapperNotFoundException("There is no user with chatId = " + chatId);
@@ -48,11 +52,13 @@ public class JooqLinkService implements LinkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Link getLatestUpdatedLink() {
         return linkRepository.getAllLinksOrderByLastUpdate().get(0);
     }
 
     @Override
+    @Transactional
     public void updateLinkById(Link linkWithUpdates) {
         try {
             linkRepository.updateLinkById(linkWithUpdates);

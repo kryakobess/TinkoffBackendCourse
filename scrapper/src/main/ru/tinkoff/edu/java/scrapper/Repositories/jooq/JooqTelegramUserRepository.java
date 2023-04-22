@@ -1,7 +1,8 @@
-package scrapper.Repositories;
+package scrapper.Repositories.jooq;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
+import scrapper.Repositories.TelegramUserRepository;
 import scrapper.domains.TelegramUser;
 import scrapper.domains.jooq.tables.LinkSubscription;
 import scrapper.domains.jooq.tables.TgUser;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class JooqTelegramUserRepository implements TelegramUserRepository{
+public class JooqTelegramUserRepository implements TelegramUserRepository {
     final DSLContext dslContext;
 
     final TgUser tgUser = TgUser.TG_USER;

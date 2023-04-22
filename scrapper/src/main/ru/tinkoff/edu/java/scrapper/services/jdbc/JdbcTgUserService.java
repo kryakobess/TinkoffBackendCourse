@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Exceptions.ScrapperNotFoundException;
-import scrapper.Repositories.JdbcLinkDao;
-import scrapper.Repositories.JdbcTelegramUserDao;
+import scrapper.Repositories.jdbc.JdbcLinkDao;
+import scrapper.Repositories.jdbc.JdbcTelegramUserDao;
 import scrapper.domains.TelegramUser;
 import scrapper.services.TgUserService;
 

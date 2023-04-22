@@ -3,8 +3,8 @@ package scrapper.services.jooq;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperNotFoundException;
-import scrapper.Repositories.JooqLinkRepository;
-import scrapper.Repositories.JooqTelegramUserRepository;
+import scrapper.Repositories.jooq.JooqLinkRepository;
+import scrapper.Repositories.jooq.JooqTelegramUserRepository;
 import scrapper.domains.Link;
 import scrapper.services.LinkService;
 

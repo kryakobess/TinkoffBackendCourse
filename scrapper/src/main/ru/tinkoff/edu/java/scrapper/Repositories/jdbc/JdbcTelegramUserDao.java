@@ -1,14 +1,15 @@
-package scrapper.Repositories;
+package scrapper.Repositories.jdbc;
 
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import scrapper.Repositories.TelegramUserRepository;
 import scrapper.domains.TelegramUser;
 
 import java.util.List;
 
 @Repository
-public class JdbcTelegramUserDao implements TelegramUserRepository{
+public class JdbcTelegramUserDao implements TelegramUserRepository {
 
     private final JdbcTemplate jdbcTemplate;
 

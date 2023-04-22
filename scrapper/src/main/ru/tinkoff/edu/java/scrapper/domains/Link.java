@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
+@Builder
 public class Link {
     Long id;
     Long tgUserId;

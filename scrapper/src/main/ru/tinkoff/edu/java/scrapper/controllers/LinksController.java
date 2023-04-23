@@ -1,6 +1,5 @@
 package scrapper.controllers;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +9,8 @@ import scrapper.DTOs.responses.LinkResponse;
 import scrapper.DTOs.responses.ListLinksResponse;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.services.LinkService;
-import scrapper.services.jdbc.JdbcLinkService;
 
 import java.net.MalformedURLException;
-import java.net.URI;
-
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.stream.Collectors;
@@ -25,7 +21,7 @@ import java.util.stream.Collectors;
 public class LinksController {
     final LinkService linkService;
 
-    public LinksController(@Qualifier("JooqLinkService") LinkService linkService) {
+    public LinksController(LinkService linkService) {
         this.linkService = linkService;
     }
 

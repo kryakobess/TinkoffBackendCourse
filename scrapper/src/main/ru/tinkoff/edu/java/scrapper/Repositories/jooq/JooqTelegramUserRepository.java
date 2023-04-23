@@ -63,16 +63,6 @@ public class JooqTelegramUserRepository implements TelegramUserRepository {
 
     @Override
     public TelegramUser removeByChatId(Long chatId) {
-        dslContext.deleteFrom(linkSubscription)
-                .where(linkSubscription.TGUSERID.in(
-                        dslContext.select(tgUser.ID)
-                                .from(tgUser)
-                                .join(linkSubscription)
-                                .on(tgUser.ID.eq(linkSubscription.TGUSERID))
-                                .where(tgUser.CHAT_ID.eq(chatId))
-                                .fetch()
-                ))
-                .execute();
         var res = dslContext.deleteFrom(tgUser)
                 .where(tgUser.CHAT_ID.eq(chatId))
                 .returning()

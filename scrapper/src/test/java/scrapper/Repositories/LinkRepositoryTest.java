@@ -22,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class LinkRepositoryTest extends IntegrationEnvironment {
 
-    @Qualifier("jooqLinkRepository")
+    @Qualifier("jdbcLinkDao")
     @Autowired
     public LinkRepository linkRepository;
 
-    @Qualifier("jooqTelegramUserRepository")
+    @Qualifier("jdbcTelegramUserDao")
     @Autowired
     public TelegramUserRepository userRepository;
 
@@ -147,5 +147,26 @@ class LinkRepositoryTest extends IntegrationEnvironment {
     public void removeUnknownLink(){
         //given
         assertNull(linkRepository.removeByLinkAndTgUserId("https://www.baeldung.com/java-optional", 123L));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void removeCascade(){
+        //given
+        var l2 = new Link(2L, users.get(2).getId(), "https://www.baeldung.com/spring-jdbc-jdbctemplate", timestamp);
+        var l3 = new Link(3L, users.get(2).getId(), "https://stackoverflow.com/questions/75510595/cannot-detect-liquibase-log-file-liquibase-failed-to-start-because-no-changelog", timestamp);
+        linkRepository.add(l2);
+        linkRepository.add(l3);
+
+        //when
+        userRepository.removeByChatId(users.get(2).getChatId());
+
+        //then
+        assertAll(
+                () -> assertNull(userRepository.getByChatId(users.get(2).getChatId())),
+                () -> assertNull(linkRepository.getLinkById(l2.getId())),
+                () -> assertNull(linkRepository.getLinkById(l3.getId()))
+        );
     }
 }

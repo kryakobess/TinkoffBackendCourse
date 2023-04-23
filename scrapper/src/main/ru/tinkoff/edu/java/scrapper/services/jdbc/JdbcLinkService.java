@@ -14,7 +14,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service("JdbcLinkService")
 public class JdbcLinkService implements LinkService {
 
     final JdbcLinkDao linkDao;

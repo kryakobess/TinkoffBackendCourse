@@ -9,4 +9,5 @@
 
     <include file="tg_user_table.sql"/>
     <include file="link_table.sql"/>
+    <include file="ALTER_link_CASCADE_DELETE.sql"/>
 </databaseChangeLog>

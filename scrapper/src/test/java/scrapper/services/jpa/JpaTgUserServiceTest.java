@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperNotFoundException;
 import scrapper.IntegrationEnvironment;
 import scrapper.Repositories.jpa.JpaTelegramUserRepository;
+import scrapper.services.TgUserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JpaTgUserServiceTest extends IntegrationEnvironment {
 
     @Autowired
-    JpaTgUserService userService;
+    TgUserService userService;
 
     @Autowired
     JpaTelegramUserRepository userRepository;

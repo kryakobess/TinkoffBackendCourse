@@ -1,6 +1,5 @@
 package scrapper.services.jpa;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Exceptions.ScrapperNotFoundException;
@@ -9,7 +8,6 @@ import scrapper.domains.TelegramUser;
 import scrapper.domains.jpa.TelegramUserEntity;
 import scrapper.services.TgUserService;
 
-@Service
 public class JpaTgUserService implements TgUserService {
 
     final JpaTelegramUserRepository userRepository;

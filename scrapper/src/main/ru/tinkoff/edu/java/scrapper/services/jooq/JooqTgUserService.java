@@ -8,7 +8,6 @@ import scrapper.Repositories.jooq.JooqTelegramUserRepository;
 import scrapper.domains.TelegramUser;
 import scrapper.services.TgUserService;
 
-@Service("JooqTgUserService")
 public class JooqTgUserService implements TgUserService {
 
     final JooqTelegramUserRepository userRepository;

@@ -10,6 +10,8 @@ import scrapper.Exceptions.ScrapperNotFoundException;
 import scrapper.IntegrationEnvironment;
 import scrapper.Repositories.jpa.JpaLinkRepository;
 import scrapper.Repositories.jpa.JpaTelegramUserRepository;
+import scrapper.services.LinkService;
+import scrapper.services.TgUserService;
 
 import java.net.URI;
 import java.sql.Timestamp;
@@ -22,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class JpaLinkServiceTest extends IntegrationEnvironment {
 
     @Autowired
-    JpaTgUserService userService;
+    TgUserService userService;
 
     @Autowired
-    JpaLinkService linkService;
+    LinkService linkService;
 
     @Autowired
     JpaTelegramUserRepository userRepository;
@@ -155,6 +157,28 @@ class JpaLinkServiceTest extends IntegrationEnvironment {
                 () -> assertEquals(link.getLastUpdate().toInstant().getEpochSecond(),
                         updatedLink.getLastUpdate().toInstant().getEpochSecond())
         );
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void removeUserWithSubscribedLinks(){
+        //given
+        var chatId = userChatIds.get(0);
+        linkService.add(chatId, URI.create("https://www.baeldung.com/spring-data-partial-update"));
+        linkService.add(chatId, URI.create("https://www.baeldung.com/jpa-sort"));
+        linkService.add(chatId, URI.create("https://ru.wikipedia.org/wiki/Nmap"));
+
+        //when
+        userService.delete(chatId);
+
+        //then
+        try {
+            linkService.getAll(chatId);
+            fail();
+        } catch (ScrapperNotFoundException e){
+            assertTrue(true);
+        }
 
     }
 }

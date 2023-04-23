@@ -1,6 +1,5 @@
 package scrapper.controllers;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import scrapper.services.TgUserService;
@@ -11,7 +10,7 @@ public class TgChatController {
 
     final TgUserService tgUserService;
 
-    public TgChatController(@Qualifier("JooqTgUserService") TgUserService tgUserService) {
+    public TgChatController(TgUserService tgUserService) {
         this.tgUserService = tgUserService;
     }
 

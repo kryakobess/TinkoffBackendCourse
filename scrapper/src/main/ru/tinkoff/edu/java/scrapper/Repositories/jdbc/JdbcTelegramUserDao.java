@@ -46,7 +46,7 @@ public class JdbcTelegramUserDao implements TelegramUserRepository {
     }
 
     public TelegramUser removeByChatId(Long chatId) {
-        var queryResult = jdbcTemplate.query("DELETE FROM tg_user  WHERE chat_id=? returning *", new Object[]{chatId},
+        var queryResult = jdbcTemplate.query("DELETE FROM tg_user WHERE chat_id=? returning *", new Object[]{chatId},
                 new DataClassRowMapper<>(TelegramUser.class));
         if (queryResult.isEmpty()) return null;
         else {

@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
-@Service("JooqLinkService")
+
 public class JooqLinkService implements LinkService {
 
     final JooqLinkRepository linkRepository;

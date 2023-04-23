@@ -1,21 +1,22 @@
 package bot.services.TelegramBot.commands;
 
+import bot.DTOs.responses.LinkScrapperResponse;
+import bot.services.ScrapperClient;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class ListCommand implements Command {
 
-    List<String> links = new ArrayList<>();
+    final ScrapperClient scrapperClient;
 
-    public ListCommand(){
-
+    public ListCommand(ScrapperClient scrapperClient) {
+        this.scrapperClient = scrapperClient;
     }
 
     @Override
@@ -36,20 +37,15 @@ public class ListCommand implements Command {
     }
 
     private String getListMessage(Long chatId){
+        return getMessageWithSubscribedLinks(chatId);
+    }
+
+    private String getMessageWithSubscribedLinks(Long chatId){
         log.info("Getting all subscribed links for " + chatId);
-        if (hasSubscriptions(chatId)){
-            return getListOfSubscribedLinksForChatId(chatId);
-        }
-        else {
+        var links = scrapperClient.getLinks(chatId).links();
+        if (links.isEmpty()){
             return "You do not have any links in subscription";
         }
-    }
-
-    private boolean hasSubscriptions(Long chatId){
-        return !links.isEmpty();
-    }
-
-    private String getListOfSubscribedLinksForChatId(Long chatId){
-        return String.join("\n\n", links);
+        return links.stream().map(l -> l.url().toString()).collect(Collectors.joining("\n"));
     }
 }

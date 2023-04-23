@@ -11,17 +11,17 @@ import org.springframework.web.service.annotation.PostExchange;
 
 public interface ScrapperClient {
     @GetExchange("/links")
-    ListLinksScrapperResponse getLinks(@RequestHeader("Tg-Chat-Id") int tgChatId);
+    ListLinksScrapperResponse getLinks(@RequestHeader("Tg-Chat-Id") long tgChatId);
 
     @PostExchange("/links")
-    LinkScrapperResponse addNewLink(@RequestHeader("Tg-Chat-Id") int tgChatId, @RequestBody AddLinkScrapperRequest link);
+    LinkScrapperResponse addNewLink(@RequestHeader("Tg-Chat-Id") long tgChatId, @RequestBody AddLinkScrapperRequest link);
 
     @DeleteExchange("/links")
-    LinkScrapperResponse deleteLink(@RequestHeader("Tg-Chat-Id") int tgChatId, @RequestBody DeleteLinkScrapperRequest link);
+    LinkScrapperResponse deleteLink(@RequestHeader("Tg-Chat-Id") long tgChatId, @RequestBody DeleteLinkScrapperRequest link);
 
     @PostExchange("/tg-chat/{id}")
-    void registerChat(@PathVariable int id);
+    void registerChat(@PathVariable long id);
 
     @DeleteMapping("/tg-chat/{id}")
-    void deleteChat(@PathVariable int id);
+    void deleteChat(@PathVariable long id);
 }

@@ -27,7 +27,7 @@ public class LinksController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ListLinksResponse getAllLinks(@RequestParam("Tg-Chat-Id") long tgChatId){
+    public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") long tgChatId){
         var links = linkService.getAll(tgChatId);
         return ListLinksResponse.builder()
                 .size(links.size())
@@ -39,7 +39,7 @@ public class LinksController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LinkResponse addNewLink(@RequestParam("Tg-Chat-Id") long tgChatId, @RequestBody AddLinkRequest addLinkRequest){
+    public LinkResponse addNewLink(@RequestHeader("Tg-Chat-Id") long tgChatId, @RequestBody AddLinkRequest addLinkRequest){
         try {
             var newLink = linkService.add(tgChatId, new URL(addLinkRequest.link()).toURI());
             return LinkResponse.builder()
@@ -53,7 +53,7 @@ public class LinksController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public LinkResponse deleteLink(@RequestParam("Tg-Chat-Id") long tgChatId,  @RequestBody RemoveLinkRequest removeLinkRequest){
+    public LinkResponse deleteLink(@RequestHeader("Tg-Chat-Id") long tgChatId,  @RequestBody RemoveLinkRequest removeLinkRequest){
         try {
             var link = linkService.remove(tgChatId, new URL(removeLinkRequest.link()).toURI());
             return LinkResponse.builder()
@@ -62,15 +62,6 @@ public class LinksController {
                     .build();
         } catch (MalformedURLException | URISyntaxException ex){
             throw new ScrapperBadRequestException(ex.getMessage());
-        }
-    }
-
-    private boolean isValidURL(String url) {
-        try {
-            new URL(url).toURI();
-            return true;
-        } catch (MalformedURLException | URISyntaxException e) {
-            return false;
         }
     }
 }

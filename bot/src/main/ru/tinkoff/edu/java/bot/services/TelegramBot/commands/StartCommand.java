@@ -1,5 +1,6 @@
 package bot.services.TelegramBot.commands;
 
+import bot.services.ScrapperClient;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class StartCommand implements Command{
+
+    final ScrapperClient scrapperClient;
+
+    public StartCommand(ScrapperClient scrapperClient) {
+        this.scrapperClient = scrapperClient;
+    }
+
     @Override
     public String getCommand() {
         return "/start";
@@ -33,5 +41,10 @@ public class StartCommand implements Command{
 
     private void registerUserId(Long chatId){
         log.info("Registering new user with id " + chatId);
+        try {
+            scrapperClient.registerChat(chatId);
+        } catch (Exception ex){
+            log.info(ex.getMessage());
+        }
     }
 }

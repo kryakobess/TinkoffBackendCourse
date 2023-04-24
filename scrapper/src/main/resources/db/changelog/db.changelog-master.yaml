@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/migrations/tg_user_table.sql
+  - include:
+      file: db/migrations/link_table.sql

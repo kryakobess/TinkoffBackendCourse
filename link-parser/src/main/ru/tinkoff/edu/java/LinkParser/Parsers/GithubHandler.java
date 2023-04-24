@@ -1,7 +1,7 @@
-package Parsers;
+package LinkParser.Parsers;
 
-import Links.GithubLink;
-import Links.Parsable;
+import LinkParser.Links.GithubLink;
+import LinkParser.Links.Parsable;
 
 import java.net.URL;
 import java.nio.file.Path;

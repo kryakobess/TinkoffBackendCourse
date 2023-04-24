@@ -1,7 +1,7 @@
-package Parsers;
+package LinkParser.Parsers;
 
-import Links.Parsable;
-import Links.StackOverflowLink;
+import LinkParser.Links.Parsable;
+import LinkParser.Links.StackOverflowLink;
 
 import java.net.URL;
 import java.nio.file.Path;

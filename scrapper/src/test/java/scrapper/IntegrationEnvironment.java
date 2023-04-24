@@ -7,9 +7,12 @@ import liquibase.database.core.PostgresDatabase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
 
@@ -22,6 +25,7 @@ import java.sql.SQLException;
 
 @Testcontainers
 public class IntegrationEnvironment {
+    @Container
     static final JdbcDatabaseContainer<?> DB_CONTRAINER;
 
     static {
@@ -38,7 +42,9 @@ public class IntegrationEnvironment {
         Path masterMigration = new File(".").toPath()
                 .toAbsolutePath()
                 .getParent()
-                .getParent()
+                .resolve("main")
+                .resolve("resources")
+                .resolve("db")
                 .resolve("migrations");
 
         try {
@@ -53,5 +59,12 @@ public class IntegrationEnvironment {
         } catch (SQLException | FileNotFoundException | LiquibaseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @DynamicPropertySource
+    static void springData(DynamicPropertyRegistry registry){
+        registry.add("spring.datasource.url", DB_CONTRAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", DB_CONTRAINER::getUsername);
+        registry.add("spring.datasource.password", DB_CONTRAINER::getPassword);
     }
 }

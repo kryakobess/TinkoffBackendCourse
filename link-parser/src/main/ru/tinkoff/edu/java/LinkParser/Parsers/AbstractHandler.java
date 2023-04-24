@@ -1,6 +1,6 @@
-package Parsers;
+package LinkParser.Parsers;
 
-import Links.Parsable;
+import LinkParser.Links.Parsable;
 
 import java.net.URL;
 

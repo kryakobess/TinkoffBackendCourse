@@ -28,7 +28,7 @@ services:
       - --password=testdb
       - update
     volumes:
-      - ./migrations:/liquibase/changelog
+      - ./scrapper/src/main/resources/db/migrations:/liquibase/changelog
     networks:
       - backend
 

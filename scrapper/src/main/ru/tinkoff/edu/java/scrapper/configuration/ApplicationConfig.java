@@ -2,7 +2,6 @@ package scrapper.configuration;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,8 +18,14 @@ public record ApplicationConfig(
         Scheduler scheduler,
         String gitHubBaseURL,
         String stackOverflowBaseURL,
-        String telegramBotBaseURL) {
+        String telegramBotBaseURL,
+        AccessType databaseAccessType
+        ) {
         
-    record Scheduler(Duration interval){};
+    record Scheduler(Duration interval){}
+
+    enum AccessType{
+        JDBC, JOOQ, JPA
+    }
 
 }

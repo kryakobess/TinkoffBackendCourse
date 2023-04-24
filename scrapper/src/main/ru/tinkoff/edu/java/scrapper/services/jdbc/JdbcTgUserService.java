@@ -5,12 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Exceptions.ScrapperNotFoundException;
-import scrapper.Repositories.JdbcLinkDao;
-import scrapper.Repositories.JdbcTelegramUserDao;
+import scrapper.Repositories.jdbc.JdbcLinkDao;
+import scrapper.Repositories.jdbc.JdbcTelegramUserDao;
 import scrapper.domains.TelegramUser;
 import scrapper.services.TgUserService;
 
-@Service("JdbcTgUserService")
 public class JdbcTgUserService implements TgUserService {
     final JdbcTelegramUserDao userDao;
     final JdbcLinkDao linkDao;
@@ -33,12 +32,8 @@ public class JdbcTgUserService implements TgUserService {
     @Override
     @Transactional
     public void delete(Long chatId) {
-        var user = userDao.getByChatId(chatId);
-        if (user != null) {
-            linkDao.removeAllWithTgUserId(user.getId());
-            userDao.removeByChatId(chatId);
-        }
-        else {
+        var deletedUser = userDao.removeByChatId(chatId);
+        if (deletedUser == null) {
             throw new ScrapperNotFoundException("User with chatId = " + chatId + " is not registered");
         }
     }

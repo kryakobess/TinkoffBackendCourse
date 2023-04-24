@@ -1,7 +1,8 @@
-package scrapper.Repositories;
+package scrapper.Repositories.jooq;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
+import scrapper.Repositories.LinkRepository;
 import scrapper.domains.Link;
 import scrapper.domains.jooq.tables.LinkSubscription;
 import scrapper.domains.jooq.tables.TgUser;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class JooqLinkRepository implements LinkRepository{
+public class JooqLinkRepository implements LinkRepository {
 
     final DSLContext dslContext;
 

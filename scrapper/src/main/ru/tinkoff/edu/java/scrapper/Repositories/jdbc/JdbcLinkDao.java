@@ -1,14 +1,15 @@
-package scrapper.Repositories;
+package scrapper.Repositories.jdbc;
 
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import scrapper.Repositories.LinkRepository;
 import scrapper.domains.Link;
 
 import java.util.List;
 
 @Repository
-public class JdbcLinkDao implements LinkRepository{
+public class JdbcLinkDao implements LinkRepository {
 
     private final JdbcTemplate jdbcTemplate;
 

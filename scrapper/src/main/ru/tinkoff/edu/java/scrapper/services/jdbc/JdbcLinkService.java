@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Exceptions.ScrapperNotFoundException;
-import scrapper.Repositories.JdbcLinkDao;
-import scrapper.Repositories.JdbcTelegramUserDao;
+import scrapper.Repositories.jdbc.JdbcLinkDao;
+import scrapper.Repositories.jdbc.JdbcTelegramUserDao;
 import scrapper.domains.Link;
 import scrapper.services.LinkService;
 
@@ -14,7 +14,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service("JdbcLinkService")
 public class JdbcLinkService implements LinkService {
 
     final JdbcLinkDao linkDao;

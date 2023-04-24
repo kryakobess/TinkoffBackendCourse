@@ -4,12 +4,10 @@ import LinkParser.LinkParser;
 import LinkParser.Links.GithubLink;
 import LinkParser.Links.StackOverflowLink;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import scrapper.DTOs.requests.TgBotLinkUpdateRequest;
 import scrapper.DTOs.responses.SOItemsDescriptionInterface;
-
 import scrapper.domains.Link;
 
 import java.net.URI;
@@ -32,7 +30,8 @@ public class LinkUpdaterScheduler {
 
     private static final int EVENTS_TO_CHECK_COUNT = 15;
 
-    public LinkUpdaterScheduler(GitHubClient gitHubClient, StackOverflowClient stackOverflowClient, @Qualifier("JooqLinkService") LinkService linkService, @Qualifier("JooqTgUserService") TgUserService tgUserService, TelegramBotClient botClient) {
+    public LinkUpdaterScheduler(GitHubClient gitHubClient, StackOverflowClient stackOverflowClient,
+                                LinkService linkService, TgUserService tgUserService, TelegramBotClient botClient) {
         this.gitHubClient = gitHubClient;
         this.stackOverflowClient = stackOverflowClient;
         this.linkService = linkService;
@@ -87,7 +86,7 @@ public class LinkUpdaterScheduler {
 
         StringBuilder description = new StringBuilder()
                 .append(getItemsDescription(comments, dbData))
-                .append(getItemsDescription(answers, dbData));;
+                .append(getItemsDescription(answers, dbData));
 
         if (!description.toString().isBlank()){
             sendUpdateToBot(dbData, description.toString());

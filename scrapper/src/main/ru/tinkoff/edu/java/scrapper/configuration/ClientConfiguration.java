@@ -37,7 +37,7 @@ public class ClientConfiguration {
         WebClient webClient = WebClient.builder()
                 .baseUrl(appConfig.telegramBotBaseURL().isBlank() ? "localhost:8081" : appConfig.telegramBotBaseURL())
                 .build();
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).blockTimeout(Duration.ofSeconds(10,10)).build();
         return factory.createClient(TelegramBotClient.class);
     }
 }

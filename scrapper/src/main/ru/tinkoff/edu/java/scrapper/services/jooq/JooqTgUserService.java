@@ -4,11 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Exceptions.ScrapperNotFoundException;
-import scrapper.Repositories.JooqTelegramUserRepository;
+import scrapper.Repositories.jooq.JooqTelegramUserRepository;
 import scrapper.domains.TelegramUser;
 import scrapper.services.TgUserService;
 
-@Service("JooqTgUserService")
 public class JooqTgUserService implements TgUserService {
 
     final JooqTelegramUserRepository userRepository;

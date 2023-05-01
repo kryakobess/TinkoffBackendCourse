@@ -19,7 +19,11 @@ public record ApplicationConfig(
         String gitHubBaseURL,
         String stackOverflowBaseURL,
         String telegramBotBaseURL,
-        AccessType databaseAccessType
+        AccessType databaseAccessType,
+        String directExchangeName,
+        String queueName,
+        String routingKeyName,
+        boolean useQueue
         ) {
         
     record Scheduler(Duration interval){}

@@ -16,24 +16,21 @@ import java.util.Map;
 public class RabbitMQConfiguration {
 
     @Bean
-    DirectExchange directExchange(ApplicationConfig appConfig){
-        return new DirectExchange(appConfig.scrapperRabbitMQ().directExchange(), true, false);
+    DirectExchange deadLetterDirectExchange(ApplicationConfig appConfig){
+        return new DirectExchange(appConfig.scrapperRabbitMQ().queue() + ".dlx", true, false);
     }
 
     @Bean
-    Queue queue(ApplicationConfig appConfig){
-        return QueueBuilder
-                .durable(appConfig.scrapperRabbitMQ().queue())
-                .build();
+    Queue deadLetterQueue(ApplicationConfig appConfig){
+        return new Queue(appConfig.scrapperRabbitMQ().queue() + ".dlq");
     }
 
     @Bean
-    Binding binding(ApplicationConfig appConfig){
+    Binding deadLetterBinding(ApplicationConfig appConfig){
         return BindingBuilder
-                .bind(queue(appConfig))
-                .to(directExchange(appConfig))
-                .with(appConfig.scrapperRabbitMQ().RoutingKey());
-
+                .bind(deadLetterQueue(appConfig))
+                .to(deadLetterDirectExchange(appConfig))
+                .withQueueName();
     }
 
     @Bean

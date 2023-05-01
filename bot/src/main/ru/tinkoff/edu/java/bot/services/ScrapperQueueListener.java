@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@RabbitListener(queues = "${app.scrapperQueue.name}")
+@RabbitListener(queues = "${app.scrapperRabbitMQ.queue}")
 public class ScrapperQueueListener {
 
     final UpdateHandler handler;

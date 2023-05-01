@@ -6,8 +6,6 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @Configuration
 public class RabbitMQConfiguration {
     @Bean
@@ -19,6 +17,8 @@ public class RabbitMQConfiguration {
     Queue queue(ApplicationConfig appConfig){
         return QueueBuilder
                 .durable(appConfig.queueName())
+                .withArgument("x-dead-letter-exchange", appConfig.queueName() + ".dlx")
+                .withArgument("x-dead-letter-routing-key", appConfig.queueName() + ".dlq")
                 .build();
     }
 

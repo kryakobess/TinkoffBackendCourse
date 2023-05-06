@@ -26,17 +26,17 @@ public class LinkUpdaterScheduler {
     final LinkService linkService;
     final TgUserService tgUserService;
 
-    final TelegramBotClient botClient;
+    final UpdateSender updateSender;
 
     private static final int EVENTS_TO_CHECK_COUNT = 15;
 
     public LinkUpdaterScheduler(GitHubClient gitHubClient, StackOverflowClient stackOverflowClient,
-                                LinkService linkService, TgUserService tgUserService, TelegramBotClient botClient) {
+                                LinkService linkService, TgUserService tgUserService, UpdateSender updateSender) {
         this.gitHubClient = gitHubClient;
         this.stackOverflowClient = stackOverflowClient;
         this.linkService = linkService;
         this.tgUserService = tgUserService;
-        this.botClient = botClient;
+        this.updateSender = updateSender;
     }
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
@@ -70,7 +70,9 @@ public class LinkUpdaterScheduler {
         if (events != null) {
             for (int i = Math.min(EVENTS_TO_CHECK_COUNT, events.length-1); i >= 0; --i) {
                 var e = events[i];
+                System.out.println(e.created_at());
                 if (hasNewUpdate(e.created_at(), dbData.getLastUpdate())) {
+                    log.info("new update on " + dbData.getLink());
                     String desc = e.getEventDescription();
                     sendUpdateToBot(dbData, desc);
                 }
@@ -98,6 +100,7 @@ public class LinkUpdaterScheduler {
         if (items.hasItems()){
             for (int i = Math.min(items.getItemsCount()-1, EVENTS_TO_CHECK_COUNT); i >= 0; i--){
                 if (items.itemHasNewUpdates(i, dbData.getLastUpdate())){
+                    log.info("new update on " + dbData.getLink());
                     result.append(items.getItemDescription(i));
                 }
             }
@@ -114,7 +117,7 @@ public class LinkUpdaterScheduler {
         try {
             log.info("Sending update to bot");
             var user = tgUserService.getUserById(dbData.getTgUserId());
-            botClient.sendUpdate(
+            updateSender.send(
                     TgBotLinkUpdateRequest.builder()
                             .id(Math.toIntExact(dbData.getId()))
                             .description(description)

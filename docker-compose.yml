@@ -32,9 +32,19 @@ services:
     networks:
       - backend
 
+  rabbit-mq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   scrapper_db_data:
     name: scrapper_db_data
+  rabbitmq_data:
+    name: rabbitmq_data
 
 networks:
   backend:

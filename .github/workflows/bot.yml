@@ -48,7 +48,7 @@ jobs:
       with:
         images: |
           ${{ secrets.DOCKER_USERNAME }}/link-bot-image
-          ghcr.io/link-bot-image
+          ghcr.io/${{ github.actor }}/link-bot-image
 
     - name: Build and push
       uses: docker/build-push-action@v4

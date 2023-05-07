@@ -29,8 +29,8 @@ jobs:
         image: tinkoff_backend_course/bot_image
         tags: latest
         registry: docker.io
-        dockerfile: Dockerfile
         directory: bot
+        dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 

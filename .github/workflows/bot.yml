@@ -26,7 +26,7 @@ jobs:
     - name: Build & push Docker image
       uses: mr-smithers-excellent/docker-build-push@v5
       with:
-        image: tinkoff_backend_course/bot_image
+        image: ${{ secrets.DOCKER_USERNAME }}/tinkoff_backend_course
         tags: latest
         registry: docker.io
         directory: bot

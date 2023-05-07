@@ -47,3 +47,4 @@ jobs:
         with:
           context: scrapper
           push: true
+          tags: user/scrapper:latest

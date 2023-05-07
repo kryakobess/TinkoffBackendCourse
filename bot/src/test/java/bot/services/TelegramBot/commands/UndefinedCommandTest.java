@@ -16,12 +16,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UndefinedCommandTest {
+public class UndefinedCommandTest {
     @Mock
-    Update update;
+    public Update update;
 
     @Spy
-    UndefinedCommand undefinedCommand;
+    public UndefinedCommand undefinedCommand;
 
     @BeforeEach
     public void setUp(){

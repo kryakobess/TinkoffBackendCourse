@@ -11,35 +11,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-class ListCommandTest {
+public class ListCommandTest {
 
     @Mock
-    Update update;
+    public Update update;
 
     @Autowired
-    ListCommand listCommand;
+    public ListCommand listCommand;
 
     @MockBean
-    ScrapperClient scrapperClient;
+    public ScrapperClient scrapperClient;
 
     @BeforeEach
     public void setUp(){
@@ -57,8 +55,6 @@ class ListCommandTest {
         //given
         when(scrapperClient.getLinks(anyLong())).thenReturn(new ListLinksScrapperResponse(0, new ArrayList<>()));
 
-       // when(listCommand.scrapperClient).thenReturn(scrapperClient);
-
         //when
         SendMessage sendMessage = listCommand.handle(update);
 
@@ -68,15 +64,13 @@ class ListCommandTest {
     @Test
     void handle_withNotEmptyLinksList() {
         //given
-        List<String> links = List.of(
-                        "https://github.com/kryakobess/TinkoffBackendCourse/pulls",
-                        "https://www.youtube.com/watch?v=SjDMW-6vh58"
+        List<LinkScrapperResponse> links = List.of(
+                        new LinkScrapperResponse(1, URI.create("https://github.com/kryakobess/TinkoffBackendCourse/pulls")),
+                        new LinkScrapperResponse(2, URI.create("https://www.youtube.com/watch?v=SjDMW-6vh58"))
                 );
-        when(listCommand.scrapperClient.getLinks(anyLong())).thenReturn(
-                new ListLinksScrapperResponse(anyInt(), links.stream()
-                .map(l -> new LinkScrapperResponse(1, URI.create(l)))
-                .collect(Collectors.toList())));
-        String expectedMessage = String.join("\n", links);
+
+        when(listCommand.scrapperClient.getLinks(anyLong())).thenReturn(new ListLinksScrapperResponse(links.size(), links));
+        String expectedMessage = links.stream().map(lr -> lr.url().toString()).collect(Collectors.joining("\n"));
 
         //when
         SendMessage sendMessage = listCommand.handle(update);

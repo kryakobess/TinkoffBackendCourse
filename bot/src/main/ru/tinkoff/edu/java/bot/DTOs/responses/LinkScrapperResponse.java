@@ -1,6 +1,5 @@
 package bot.DTOs.responses;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import org.hibernate.validator.constraints.URL;
 

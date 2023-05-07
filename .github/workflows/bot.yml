@@ -12,6 +12,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - uses: actions/checkout@v3
@@ -48,7 +51,7 @@ jobs:
       with:
         images: |
           ${{ secrets.DOCKER_USERNAME }}/link-bot-image
-          ghcr.io/${{ github.actor }}/link-bot-image
+          ghcr.io/link-bot-image
 
     - name: Build and push
       uses: docker/build-push-action@v4

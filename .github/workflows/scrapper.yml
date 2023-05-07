@@ -14,6 +14,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v3
@@ -49,7 +52,7 @@ jobs:
         with:
           images: |
             ${{ secrets.DOCKER_USERNAME }}/scrapper-image
-            ghcr.io/${{ github.actor }}/scrapper-image
+            ghcr.io/scrapper-image
 
       - name: Build and push
         uses: docker/build-push-action@v4

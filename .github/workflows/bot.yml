@@ -24,7 +24,7 @@ jobs:
     - name: Build with Maven
       run: mvn package -pl bot -am
     - name: Show path
-      run: ls -la
+      run: cd bot | ls -la
     - name: Build & push Docker image
       uses: mr-smithers-excellent/docker-build-push@v5
       with:

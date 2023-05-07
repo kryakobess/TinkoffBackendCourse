@@ -52,7 +52,7 @@ jobs:
         with:
           images: |
             ${{ secrets.DOCKER_USERNAME }}/scrapper-image
-            ghcr.io/scrapper-image
+            ghcr.io/${{ github.actor }}/scrapper-image
 
       - name: Build and push
         uses: docker/build-push-action@v4

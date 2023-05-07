@@ -43,7 +43,6 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
-        context: .
-        file: ./bot/Dockerfile
+        context: bot
         push: true
-        tags: user/bot:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/link-bot-image:latest

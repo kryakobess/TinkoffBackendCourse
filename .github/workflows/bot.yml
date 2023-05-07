@@ -23,6 +23,13 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn package -pl bot -am
-    - name: Build docker
-      run: docker build bot/ -t bot_image
+    - name: Build & push Docker image
+      uses: mr-smithers-excellent/docker-build-push@v5
+      with:
+        image: ${{ secrets.DOCKER_USERNAME }}/tinkoff_backend_course
+        tags: latest
+        registry: docker.io
+        dockerfile: bot/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 

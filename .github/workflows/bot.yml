@@ -23,15 +23,25 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn package -pl bot -am
-    - name: Show path
-      run: ls -la ./bot/
-    - name: Build & push Docker image
-      uses: mr-smithers-excellent/docker-build-push@v5
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
       with:
-        image: ${{ secrets.DOCKER_USERNAME }}/tinkoff_backend_course
-        tags: latest
-        registry: docker.io
-        dockerfile: bot/Dockerfile
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: bot
+        push: true
+        tags: user/app:latest
 

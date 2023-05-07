@@ -38,12 +38,11 @@ jobs:
     - name: Extract metadata (tags, labels) for Docker
       uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
       with:
-        images: ${{ secrets.DOCKER_USERNAME }}/tinkoff_backend_course
+        images: ${{ secrets.DOCKER_USERNAME }}/link-bot-image
 
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
         context: bot
         push: true
-        tags: bot:latest
 

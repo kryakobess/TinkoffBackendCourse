@@ -25,10 +25,10 @@ public record ApplicationConfig(
         String routingKeyName,
         boolean useQueue
         ) {
-        
+
     record Scheduler(Duration interval){}
 
-    enum AccessType{
+    enum AccessType {
         JDBC, JOOQ, JPA
     }
 

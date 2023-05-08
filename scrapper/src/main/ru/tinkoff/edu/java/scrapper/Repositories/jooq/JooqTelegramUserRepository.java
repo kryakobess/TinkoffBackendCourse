@@ -70,7 +70,7 @@ public class JooqTelegramUserRepository implements TelegramUserRepository {
         return res.map(this::mapRecordToTelegramUser).orElse(null);
     }
 
-    private TelegramUser mapRecordToTelegramUser(TgUserRecord record){
-        return new TelegramUser(record.getId(), record.getChatId());
+    private TelegramUser mapRecordToTelegramUser(TgUserRecord userRecord) {
+        return new TelegramUser(userRecord.getId(), userRecord.getChatId());
     }
 }

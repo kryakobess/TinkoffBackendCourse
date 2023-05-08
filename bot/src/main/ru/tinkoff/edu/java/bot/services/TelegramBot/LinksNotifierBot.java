@@ -20,20 +20,21 @@ public class LinksNotifierBot extends Bot {
     }
 
     @Override
-    public void handle(Update update){
+    public void handle(Update update) {
         if (hasMessage(update)) {
             Long chatId = update.message().chat().id();
             log.info("Handling update from " + chatId);
-            if (isTextMessage(update)){
+            if (isTextMessage(update)) {
                 telegramBot.execute(commandFactory.sendMessageForCommandFromUpdate(update));
             }
         }
     }
 
-    private boolean hasMessage(Update update){
+    private boolean hasMessage(Update update) {
         return update.message() != null;
     }
-    private boolean isTextMessage(Update update){
+
+    private boolean isTextMessage(Update update) {
         return hasMessage(update) && update.message().text() != null;
     }
 }

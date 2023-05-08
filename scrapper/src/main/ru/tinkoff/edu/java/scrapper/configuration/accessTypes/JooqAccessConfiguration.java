@@ -14,12 +14,12 @@ import scrapper.services.jooq.JooqTgUserService;
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jooq")
 public class JooqAccessConfiguration {
     @Bean
-    LinkService jooqLinkService(JooqLinkRepository linkRepository, JooqTelegramUserRepository userRepository){
+    LinkService jooqLinkService(JooqLinkRepository linkRepository, JooqTelegramUserRepository userRepository) {
         return new JooqLinkService(linkRepository, userRepository);
     }
 
     @Bean
-    TgUserService jooqUserService(JooqTelegramUserRepository userRepository){
+    TgUserService jooqUserService(JooqTelegramUserRepository userRepository) {
         return new JooqTgUserService(userRepository);
     }
 }

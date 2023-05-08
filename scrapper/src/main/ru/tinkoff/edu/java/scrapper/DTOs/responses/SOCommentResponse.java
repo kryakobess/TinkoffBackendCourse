@@ -1,9 +1,7 @@
 package scrapper.DTOs.responses;
 
-
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.util.List;
 
 public record SOCommentResponse(Comment[] items) implements SOItemsDescriptionInterface {
     @Override
@@ -27,12 +25,14 @@ public record SOCommentResponse(Comment[] items) implements SOItemsDescriptionIn
         return items != null && items.length != 0;
     }
 
-    public record Comment(CommentOwner owner, OffsetDateTime creation_date, int score){
+    public record Comment(CommentOwner owner, OffsetDateTime creation_date, int score) {
+
+        public String getDescription() {
+            return String.format("New comment from %s(%s) with accept rate = %d\nComment score = %d\n",
+                owner.display_name, owner.link, owner.accept_rate, score);
+        }
+
         record CommentOwner(int accept_rate, String display_name, String link){}
 
-        public String getDescription(){
-            return String.format("New comment from %s(%s) with accept rate = %d\nComment score = %d\n",
-                    owner.display_name, owner.link, owner.accept_rate, score);
-        }
     }
 }

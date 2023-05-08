@@ -15,12 +15,12 @@ import scrapper.services.jdbc.JdbcTgUserService;
 public class JdbcAccessConfiguration {
 
     @Bean
-    LinkService jdbcLinkService(JdbcLinkDao linkDao, JdbcTelegramUserDao userDao){
+    LinkService jdbcLinkService(JdbcLinkDao linkDao, JdbcTelegramUserDao userDao) {
         return new JdbcLinkService(linkDao, userDao);
     }
 
     @Bean
-    TgUserService jdbcUserService(JdbcTelegramUserDao userDao, JdbcLinkDao linkDao){
+    TgUserService jdbcUserService(JdbcTelegramUserDao userDao, JdbcLinkDao linkDao) {
         return new JdbcTgUserService(userDao, linkDao);
     }
 }

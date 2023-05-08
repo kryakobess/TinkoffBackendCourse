@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class UpdateHandler {
     final Bot bot;
 
-    public void handle(LinkUpdateRequest linkUpdate){
+    public void handle(LinkUpdateRequest linkUpdate) {
         var chatId = linkUpdate.tgChatIds().get(0);
         var message = String.format("New update for %s :\n%s",
                 linkUpdate.url(), linkUpdate.description());

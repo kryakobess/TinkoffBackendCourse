@@ -90,8 +90,9 @@ public class JooqLinkRepository implements LinkRepository {
                 .execute();
     }
 
-    private Link mapLinkWithRecord(LinkSubscriptionRecord record){
-        return new Link(record.getId(), record.getTguserid(), record.getLink(), Timestamp.valueOf(record.getLastupdate()));
+    private Link mapLinkWithRecord(LinkSubscriptionRecord linkSubscriptionRecord) {
+        return new Link(linkSubscriptionRecord.getId(), linkSubscriptionRecord.getTguserid(),
+            linkSubscriptionRecord.getLink(), Timestamp.valueOf(linkSubscriptionRecord.getLastupdate()));
     }
 
 }

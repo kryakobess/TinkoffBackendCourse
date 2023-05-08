@@ -10,12 +10,16 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Configuration
 public class ClientsConfiguration {
     private final static String SCRAPPER_CLIENT_DEFAULT_URL = "http://localhost:8080";
+
     @Bean
-    ScrapperClient scrapperClient(ApplicationConfig appConfig){
+    ScrapperClient scrapperClient(ApplicationConfig appConfig) {
         WebClient webClient = WebClient.builder()
-                .baseUrl(appConfig.scrapperBaseUrl().isBlank() ? SCRAPPER_CLIENT_DEFAULT_URL : appConfig.scrapperBaseUrl())
+                .baseUrl(appConfig.scrapperBaseUrl().isBlank()
+                    ? SCRAPPER_CLIENT_DEFAULT_URL : appConfig.scrapperBaseUrl())
                 .build();
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory
+            .builder(WebClientAdapter.forClient(webClient))
+            .build();
         return factory.createClient(ScrapperClient.class);
     }
 }

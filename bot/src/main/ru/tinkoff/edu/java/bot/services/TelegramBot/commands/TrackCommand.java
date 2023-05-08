@@ -11,7 +11,7 @@ import java.net.URI;
 
 @Slf4j
 @Component
-public class TrackCommand extends CommandWithReply{
+public class TrackCommand extends CommandWithReply {
 
     final ScrapperClient scrapperClient;
 
@@ -38,10 +38,9 @@ public class TrackCommand extends CommandWithReply{
     public SendMessage handle(Update update) {
         log.info("/track command");
         Long chatId = update.message().chat().id();
-        if (isOriginalCommand(update)){
+        if (isOriginalCommand(update)) {
             return sendMessageWithForceReply(chatId);
-        }
-        else if (isReplyToMessage(update)){
+        } else if (isReplyToMessage(update)) {
             String linkFromText = update.message().text();
             subscribeLink(linkFromText, chatId);
             String message = "Link has been subscribed";
@@ -51,11 +50,11 @@ public class TrackCommand extends CommandWithReply{
     }
 
 
-    private void subscribeLink(String link, Long chatId){
+    private void subscribeLink(String link, Long chatId) {
         log.info("Subscribing to " + link);
         try {
             scrapperClient.addNewLink(chatId, new AddLinkScrapperRequest(URI.create(link)));
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.info(ex.getMessage());
         }
     }

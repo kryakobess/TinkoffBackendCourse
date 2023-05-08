@@ -9,6 +9,15 @@ on:
       - 'bot/**'
 
 jobs:
+
+  check-style:
+    runs-on: ubuntu-latest
+
+  steps:
+    - uses: actions/checkout@v3
+    - name: check codestyle of bot module
+      run: mvn -pl bot -am checkstyle:check
+
   build:
 
     runs-on: ubuntu-latest

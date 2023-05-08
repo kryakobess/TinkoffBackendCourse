@@ -1,7 +1,10 @@
 package bot.configuration;
 
 import bot.DTOs.requests.LinkUpdateRequest;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.ClassMapper;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -16,17 +19,17 @@ import java.util.Map;
 public class RabbitMQConfiguration {
 
     @Bean
-    DirectExchange deadLetterDirectExchange(ApplicationConfig appConfig){
+    DirectExchange deadLetterDirectExchange(ApplicationConfig appConfig) {
         return new DirectExchange(appConfig.scrapperRabbitMQ().queue() + ".dlx", true, false);
     }
 
     @Bean
-    Queue deadLetterQueue(ApplicationConfig appConfig){
+    Queue deadLetterQueue(ApplicationConfig appConfig) {
         return new Queue(appConfig.scrapperRabbitMQ().queue() + ".dlq");
     }
 
     @Bean
-    Binding deadLetterBinding(ApplicationConfig appConfig){
+    Binding deadLetterBinding(ApplicationConfig appConfig) {
         return BindingBuilder
                 .bind(deadLetterQueue(appConfig))
                 .to(deadLetterDirectExchange(appConfig))
@@ -34,7 +37,7 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public ClassMapper classMapper(){
+    public ClassMapper classMapper() {
         Map<String, Class<?>> mappings = new HashMap<>();
         mappings.put("scrapper.DTOs.requests.TgBotLinkUpdateRequest", LinkUpdateRequest.class);
 
@@ -45,7 +48,7 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter(ClassMapper classMapper){
+    public MessageConverter jsonMessageConverter(ClassMapper classMapper) {
         Jackson2JsonMessageConverter jsonConverter = new Jackson2JsonMessageConverter();
         jsonConverter.setClassMapper(classMapper);
         return jsonConverter;

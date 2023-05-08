@@ -11,6 +11,15 @@ on:
       - 'scrapper-jooq/**'
 
 jobs:
+
+  check-style:
+    runs-on: ubuntu-latest
+
+  steps:
+    - uses: actions/checkout@v3
+    - name: check codestyle of scrapper module
+      run: mvn -pl scrapper -am checkstyle:check
+
   build:
 
     runs-on: ubuntu-latest

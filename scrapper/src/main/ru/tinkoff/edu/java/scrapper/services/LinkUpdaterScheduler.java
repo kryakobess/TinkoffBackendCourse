@@ -40,13 +40,13 @@ public class LinkUpdaterScheduler {
     }
 
     @Scheduled(fixedDelayString = "#{@schedulerIntervalMs}")
-    public void update(){
+    public void update() {
         try {
             var link = linkService.getLatestUpdatedLink();
             checkForUpdates(link);
             link.setLastUpdate(Timestamp.from(Instant.now()));
             linkService.updateLinkById(link);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.info(e.getMessage());
         }
     }
@@ -57,9 +57,10 @@ public class LinkUpdaterScheduler {
             var parseResult = LinkParser.parse(new URL(link.getLink()));
             switch (parseResult) {
                 case GithubLink githubLink -> processGitHubUpdates(githubLink.user(), githubLink.repo(), link);
-                case StackOverflowLink stackOverflowLink -> processStackOverflowUpdates(stackOverflowLink.questionId(), link);
+                case StackOverflowLink stackOverflowLink ->
+                    processStackOverflowUpdates(stackOverflowLink.questionId(), link);
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.info("Exception: " + ex.getMessage());
         }
     }
@@ -68,9 +69,8 @@ public class LinkUpdaterScheduler {
         log.info("Fetching github events for link " + dbData.getLink());
         var events = gitHubClient.getRepoData(owner, repo);
         if (events != null) {
-            for (int i = Math.min(EVENTS_TO_CHECK_COUNT, events.length-1); i >= 0; --i) {
+            for (int i = Math.min(EVENTS_TO_CHECK_COUNT, events.length - 1); i >= 0; --i) {
                 var e = events[i];
-                System.out.println(e.created_at());
                 if (hasNewUpdate(e.created_at(), dbData.getLastUpdate())) {
                     log.info("new update on " + dbData.getLink());
                     String desc = e.getEventDescription();
@@ -80,7 +80,7 @@ public class LinkUpdaterScheduler {
         }
     }
 
-    void processStackOverflowUpdates(long questionId, Link dbData){
+    void processStackOverflowUpdates(long questionId, Link dbData) {
         log.info("Fetching SO comments from " + dbData.getLink());
         var comments = stackOverflowClient.getQuestionComments(questionId);
         log.info("Fetching SO answers from " + dbData.getLink());
@@ -90,16 +90,16 @@ public class LinkUpdaterScheduler {
                 .append(getItemsDescription(comments, dbData))
                 .append(getItemsDescription(answers, dbData));
 
-        if (!description.toString().isBlank()){
+        if (!description.toString().isBlank()) {
             sendUpdateToBot(dbData, description.toString());
         }
     }
 
-    String getItemsDescription(SOItemsDescriptionInterface items, Link dbData){
+    String getItemsDescription(SOItemsDescriptionInterface items, Link dbData) {
         StringBuilder result = new StringBuilder();
-        if (items.hasItems()){
-            for (int i = Math.min(items.getItemsCount()-1, EVENTS_TO_CHECK_COUNT); i >= 0; i--){
-                if (items.itemHasNewUpdates(i, dbData.getLastUpdate())){
+        if (items.hasItems()) {
+            for (int i = Math.min(items.getItemsCount() - 1, EVENTS_TO_CHECK_COUNT); i >= 0; i--) {
+                if (items.itemHasNewUpdates(i, dbData.getLastUpdate())) {
                     log.info("new update on " + dbData.getLink());
                     result.append(items.getItemDescription(i));
                 }
@@ -108,12 +108,12 @@ public class LinkUpdaterScheduler {
         return result.toString();
     }
 
-    private boolean hasNewUpdate(OffsetDateTime eventTime, Timestamp lastUpdatedTime){
+    private boolean hasNewUpdate(OffsetDateTime eventTime, Timestamp lastUpdatedTime) {
         Timestamp eventAt = Timestamp.from(eventTime.toInstant());
         return eventAt.after(lastUpdatedTime);
     }
 
-    private void sendUpdateToBot(Link dbData, String description){
+    private void sendUpdateToBot(Link dbData, String description) {
         try {
             log.info("Sending update to bot");
             var user = tgUserService.getUserById(dbData.getTgUserId());
@@ -126,7 +126,7 @@ public class LinkUpdaterScheduler {
                             .build()
             );
             log.info("Update has been sent to " + user.getChatId());
-        } catch (Exception e){
+        } catch (Exception e) {
             log.info(e.getMessage());
         }
     }

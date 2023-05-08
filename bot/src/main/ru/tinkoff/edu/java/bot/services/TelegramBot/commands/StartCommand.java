@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class StartCommand implements Command{
+public class StartCommand implements Command {
 
     final ScrapperClient scrapperClient;
 
@@ -34,16 +34,16 @@ public class StartCommand implements Command{
         registerUserId(chatId);
 
         String userName = update.message().from().firstName();
-        String message = "Welcome, " + userName + "!\n" +
-                "Now, you can track your links!";
+        String message = "Welcome, " + userName + "!\n"
+                + "Now, you can track your links!";
         return new SendMessage(chatId, message);
     }
 
-    private void registerUserId(Long chatId){
+    private void registerUserId(Long chatId) {
         log.info("Registering new user with id " + chatId);
         try {
             scrapperClient.registerChat(chatId);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.info(ex.getMessage());
         }
     }

@@ -1,7 +1,6 @@
 package bot.controllers;
 
 import bot.DTOs.requests.LinkUpdateRequest;
-import bot.services.TelegramBot.Bot;
 import bot.services.UpdateHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,9 +1,7 @@
 package scrapper.Repositories;
 
-import org.springframework.jdbc.core.DataClassRowMapper;
-import scrapper.domains.Link;
-
 import java.util.List;
+import scrapper.domains.Link;
 
 public interface LinkRepository {
 

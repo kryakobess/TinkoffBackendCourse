@@ -1,17 +1,15 @@
 package scrapper.services.jooq;
 
-import org.springframework.stereotype.Service;
+import java.net.URI;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperNotFoundException;
 import scrapper.Repositories.jooq.JooqLinkRepository;
 import scrapper.Repositories.jooq.JooqTelegramUserRepository;
 import scrapper.domains.Link;
 import scrapper.services.LinkService;
-
-import java.net.URI;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.List;
 
 
 public class JooqLinkService implements LinkService {
@@ -29,7 +27,9 @@ public class JooqLinkService implements LinkService {
     @Transactional
     public Link add(Long chatId, URI url) {
         var user = userRepository.getByChatId(chatId);
-        if (user == null) throw new ScrapperNotFoundException("User with chatId =" + chatId + " does not exist");
+        if (user == null) {
+            throw new ScrapperNotFoundException("User with chatId =" + chatId + " does not exist");
+        }
         return linkRepository.add(new Link(user.getId(), url.toString(), Timestamp.from(Instant.now())));
     }
 
@@ -37,9 +37,13 @@ public class JooqLinkService implements LinkService {
     @Transactional
     public Link remove(Long chatId, URI url) {
         var user = userRepository.getByChatId(chatId);
-        if (user == null) throw new ScrapperNotFoundException("User with chatId = \" + chatId + \" does not exist");
+        if (user == null) {
+            throw new ScrapperNotFoundException("User with chatId = \" + chatId + \" does not exist");
+        }
         var deletedLink = linkRepository.removeByLinkAndTgUserId(url.toString(), user.getId());
-        if (deletedLink == null) throw new ScrapperNotFoundException(chatId + " does not subscribe to this link");
+        if (deletedLink == null) {
+            throw new ScrapperNotFoundException(chatId + " does not subscribe to this link");
+        }
         return deletedLink;
     }
 
@@ -47,7 +51,9 @@ public class JooqLinkService implements LinkService {
     @Transactional(readOnly = true)
     public List<Link> getAll(Long chatId) {
         var user = userRepository.getByChatId(chatId);
-        if (user == null) throw new ScrapperNotFoundException("There is no user with chatId = " + chatId);
+        if (user == null) {
+            throw new ScrapperNotFoundException("There is no user with chatId = " + chatId);
+        }
         return linkRepository.getAllByTgUserId(user.getId());
     }
 
@@ -62,7 +68,7 @@ public class JooqLinkService implements LinkService {
     public void updateLinkById(Link linkWithUpdates) {
         try {
             linkRepository.updateLinkById(linkWithUpdates);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             throw new ScrapperNotFoundException("There is no link with id = " + linkWithUpdates.getId());
         }
     }

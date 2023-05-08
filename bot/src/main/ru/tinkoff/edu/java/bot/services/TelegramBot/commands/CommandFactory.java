@@ -18,7 +18,9 @@ public class CommandFactory {
 
     List<Command> commands;
 
-    public CommandFactory(StartCommand startCommand, HelpCommand helpCommand, ListCommand listCommand, TrackCommand trackCommand, UntrackCommand untrackCommand, UndefinedCommand undefinedCommand) {
+    public CommandFactory(StartCommand startCommand, HelpCommand helpCommand,
+        ListCommand listCommand, TrackCommand trackCommand,
+        UntrackCommand untrackCommand, UndefinedCommand undefinedCommand) {
         this.startCommand = startCommand;
         this.helpCommand = helpCommand;
         this.listCommand = listCommand;
@@ -28,13 +30,13 @@ public class CommandFactory {
         this.commands = List.of(startCommand, helpCommand, listCommand, trackCommand, untrackCommand, undefinedCommand);
     }
 
-    public BotCommand[] getAllBotCommands(){
+    public BotCommand[] getAllBotCommands() {
         return commands.stream().map(Command::getBotCommand).toArray(BotCommand[]::new);
     }
 
-    public SendMessage sendMessageForCommandFromUpdate(Update update){
-        for (Command command : commands){
-            if (command.isCalledInUpdate(update)){
+    public SendMessage sendMessageForCommandFromUpdate(Update update) {
+        for (Command command : commands) {
+            if (command.isCalledInUpdate(update)) {
                 return command.handle(update);
             }
         }

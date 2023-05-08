@@ -1,9 +1,7 @@
 package scrapper.Repositories;
 
-import org.springframework.jdbc.core.DataClassRowMapper;
-import scrapper.domains.TelegramUser;
-
 import java.util.List;
+import scrapper.domains.TelegramUser;
 
 public interface TelegramUserRepository {
     List<TelegramUser> getAll();

@@ -1,29 +1,27 @@
 package LinkParser;
 
-import LinkParser.Links.GithubLink;
 import LinkParser.Links.Parsable;
-import LinkParser.Links.StackOverflowLink;
 import LinkParser.Parsers.AbstractHandler;
 import LinkParser.Parsers.GithubHandler;
 import LinkParser.Parsers.StackOverflowHandler;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Stack;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 public class LinkParser {
 
-    private static final AbstractHandler[] handlerOrder = {
+    private static final AbstractHandler[] HANDLER_ORDER = {
             new GithubHandler(),
             new StackOverflowHandler()
     };
 
-    private static AbstractHandler buildChain(){
+    private static AbstractHandler buildChain() {
         Stack<AbstractHandler> stack = new Stack<>();
-        for (int i = handlerOrder.length-1; i >= 0; --i){
-            handlerOrder[i].setNextHandler(stack.isEmpty() ? null : stack.pop());
-            stack.push(handlerOrder[i]);
+        for (int i = HANDLER_ORDER.length - 1; i >= 0; --i) {
+            HANDLER_ORDER[i].setNextHandler(stack.isEmpty() ? null : stack.pop());
+            stack.push(HANDLER_ORDER[i]);
         }
         return stack.pop();
     }
@@ -33,19 +31,7 @@ public class LinkParser {
         return parse(link);
     }
 
-    public static Parsable parse(URL url){
+    public static Parsable parse(URL url) {
         return buildChain().handle(url);
-    }
-
-    public static void printParseResult(String url) throws MalformedURLException {
-        printParseResult(new URL(url));
-    }
-
-    public static void printParseResult(URL url){
-        switch (parse(url)){
-            case GithubLink githubLink -> System.out.println(githubLink);
-            case StackOverflowLink stackOverflowLink -> System.out.println(stackOverflowLink);
-            case null -> throw new IllegalArgumentException("Unrecognized parsable");
-        }
     }
 }

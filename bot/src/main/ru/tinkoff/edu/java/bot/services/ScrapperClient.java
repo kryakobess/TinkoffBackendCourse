@@ -4,7 +4,10 @@ import bot.DTOs.requests.AddLinkScrapperRequest;
 import bot.DTOs.requests.DeleteLinkScrapperRequest;
 import bot.DTOs.responses.LinkScrapperResponse;
 import bot.DTOs.responses.ListLinksScrapperResponse;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.PostExchange;
@@ -14,10 +17,12 @@ public interface ScrapperClient {
     ListLinksScrapperResponse getLinks(@RequestHeader("Tg-Chat-Id") long tgChatId);
 
     @PostExchange("/links")
-    LinkScrapperResponse addNewLink(@RequestHeader("Tg-Chat-Id") long tgChatId, @RequestBody AddLinkScrapperRequest link);
+    LinkScrapperResponse addNewLink(@RequestHeader("Tg-Chat-Id") long tgChatId,
+        @RequestBody AddLinkScrapperRequest link);
 
     @DeleteExchange("/links")
-    LinkScrapperResponse deleteLink(@RequestHeader("Tg-Chat-Id") long tgChatId, @RequestBody DeleteLinkScrapperRequest link);
+    LinkScrapperResponse deleteLink(@RequestHeader("Tg-Chat-Id") long tgChatId,
+        @RequestBody DeleteLinkScrapperRequest link);
 
     @PostExchange("/tg-chat/{id}")
     void registerChat(@PathVariable long id);

@@ -2,7 +2,14 @@ package scrapper.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import scrapper.DTOs.requests.AddLinkRequest;
 import scrapper.DTOs.requests.RemoveLinkRequest;
 import scrapper.DTOs.responses.LinkResponse;
@@ -27,7 +34,7 @@ public class LinksController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") long tgChatId){
+    public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") long tgChatId) {
         var links = linkService.getAll(tgChatId);
         return ListLinksResponse.builder()
                 .size(links.size())
@@ -39,7 +46,8 @@ public class LinksController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LinkResponse addNewLink(@RequestHeader("Tg-Chat-Id") long tgChatId, @RequestBody AddLinkRequest addLinkRequest){
+    public LinkResponse addNewLink(@RequestHeader("Tg-Chat-Id") long tgChatId,
+        @RequestBody AddLinkRequest addLinkRequest) {
         try {
             var newLink = linkService.add(tgChatId, new URL(addLinkRequest.link()).toURI());
             return LinkResponse.builder()
@@ -53,14 +61,15 @@ public class LinksController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public LinkResponse deleteLink(@RequestHeader("Tg-Chat-Id") long tgChatId,  @RequestBody RemoveLinkRequest removeLinkRequest){
+    public LinkResponse deleteLink(@RequestHeader("Tg-Chat-Id") long tgChatId,
+        @RequestBody RemoveLinkRequest removeLinkRequest) {
         try {
             var link = linkService.remove(tgChatId, new URL(removeLinkRequest.link()).toURI());
             return LinkResponse.builder()
                     .id(Math.toIntExact(link.getId()))
                     .url(link.getLink())
                     .build();
-        } catch (MalformedURLException | URISyntaxException ex){
+        } catch (MalformedURLException | URISyntaxException ex) {
             throw new ScrapperBadRequestException(ex.getMessage());
         }
     }

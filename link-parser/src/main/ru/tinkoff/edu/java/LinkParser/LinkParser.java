@@ -7,9 +7,7 @@ import LinkParser.Parsers.StackOverflowHandler;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Stack;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class LinkParser {
 
     private static final AbstractHandler[] HANDLER_ORDER = {

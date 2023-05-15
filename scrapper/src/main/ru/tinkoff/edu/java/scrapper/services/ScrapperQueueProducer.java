@@ -7,12 +7,12 @@ import scrapper.configuration.ApplicationConfig;
 
 @RequiredArgsConstructor
 public class ScrapperQueueProducer implements UpdateSender {
-
     final RabbitTemplate template;
     final ApplicationConfig appConfig;
 
     @Override
     public void send(TgBotLinkUpdateRequest linkUpdate) {
         template.convertAndSend(appConfig.directExchangeName(), appConfig.routingKeyName(), linkUpdate);
+        SentMessageCounter.increment();
     }
 }

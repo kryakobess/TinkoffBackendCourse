@@ -19,5 +19,6 @@ public class ScrapperQueueListener {
     public void consumer(LinkUpdateRequest update) {
         log.info("received new update from rabbitMQ");
         handler.handle(update);
+        ReceivedMessageCounter.increment();
     }
 }

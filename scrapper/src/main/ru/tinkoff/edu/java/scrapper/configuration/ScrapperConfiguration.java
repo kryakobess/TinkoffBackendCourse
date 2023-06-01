@@ -3,7 +3,6 @@ package scrapper.configuration;
 import org.jooq.conf.RenderQuotedNames;
 import org.jooq.impl.DefaultConfiguration;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.jooq.DefaultConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +21,7 @@ public class ScrapperConfiguration {
     }
 
     @Bean
-    public DefaultConfigurationCustomizer postgresJooqCustomizer(){
+    public DefaultConfigurationCustomizer postgresJooqCustomizer() {
         return (DefaultConfiguration c) -> c.settings()
                 .withRenderSchema(false)
                 .withRenderFormatted(true)
@@ -31,11 +30,10 @@ public class ScrapperConfiguration {
 
     @Bean
     public UpdateSender updateSender(ApplicationConfig appConfig, RabbitTemplate template,
-                                     TelegramBotClient botClient){
+                                     TelegramBotClient botClient) {
         if (appConfig.useQueue()) {
             return new ScrapperQueueProducer(template, appConfig);
-        }
-        else {
+        } else {
             return new BotClientUpdateSender(botClient);
         }
     }

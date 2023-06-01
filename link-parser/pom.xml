@@ -15,11 +15,12 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <src.dir>src/main/ru/tinkoff/edu/java</src.dir>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -45,6 +46,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
         </plugins>
+        <sourceDirectory>${src.dir}</sourceDirectory>
     </build>
 
 </project>

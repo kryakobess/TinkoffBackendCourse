@@ -11,7 +11,7 @@ import java.net.URI;
 
 @Slf4j
 @Component
-public class UntrackCommand extends CommandWithReply{
+public class UntrackCommand extends CommandWithReply {
 
     final ScrapperClient scrapperClient;
 
@@ -23,6 +23,7 @@ public class UntrackCommand extends CommandWithReply{
     public String getMessageToReply() {
         return "Send me a link you want unsubscribe from in reply to this message";
     }
+
     @Override
     public String getCommand() {
         return "/untrack";
@@ -36,10 +37,9 @@ public class UntrackCommand extends CommandWithReply{
     @Override
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
-        if (isOriginalCommand(update)){
+        if (isOriginalCommand(update)) {
             return sendMessageWithForceReply(chatId);
-        }
-        else if (isReplyToMessage(update)){
+        } else if (isReplyToMessage(update)) {
             String linkFromMessage = update.message().text();
             unsubscribeFromLink(linkFromMessage, chatId);
             String message = "You have been unsubscribed from " + linkFromMessage;
@@ -48,11 +48,11 @@ public class UntrackCommand extends CommandWithReply{
         return null;
     }
 
-    private void unsubscribeFromLink(String link, Long chatId){
+    private void unsubscribeFromLink(String link, Long chatId) {
         log.info("unsubscribing from" + link);
         try {
             scrapperClient.deleteLink(chatId, new DeleteLinkScrapperRequest(URI.create(link)));
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.info(ex.getMessage());
         }
     }

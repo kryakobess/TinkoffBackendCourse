@@ -12,15 +12,15 @@ public abstract class Bot {
 
     abstract void handle(Update update);
 
-    Bot(BotConfig botConfig){
+    Bot(BotConfig botConfig) {
         telegramBot = new TelegramBot(botConfig.getToken());
-        telegramBot.setUpdatesListener(updates ->{
+        telegramBot.setUpdatesListener(updates -> {
             updates.forEach(this::handle);
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }
 
-    public void sendMessage(Long chatId, String message){
+    public void sendMessage(Long chatId, String message) {
         telegramBot.execute(new SendMessage(chatId, message));
     }
 }

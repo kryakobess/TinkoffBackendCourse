@@ -14,12 +14,12 @@ import scrapper.services.jpa.JpaTgUserService;
 @ConditionalOnProperty(prefix = "app", name = "database-access-type", havingValue = "jpa")
 public class JpaAccessConfiguration {
     @Bean
-    LinkService jpaLinkService(JpaLinkRepository linkRepository, JpaTelegramUserRepository userRepository){
+    LinkService jpaLinkService(JpaLinkRepository linkRepository, JpaTelegramUserRepository userRepository) {
         return new JpaLinkService(userRepository, linkRepository);
     }
 
     @Bean
-    TgUserService jpaUserService(JpaTelegramUserRepository userRepository){
+    TgUserService jpaUserService(JpaTelegramUserRepository userRepository) {
         return new JpaTgUserService(userRepository);
     }
 }

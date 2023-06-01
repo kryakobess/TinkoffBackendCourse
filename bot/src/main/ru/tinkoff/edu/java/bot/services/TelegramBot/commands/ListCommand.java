@@ -1,13 +1,11 @@
 package bot.services.TelegramBot.commands;
 
-import bot.DTOs.responses.LinkScrapperResponse;
 import bot.services.ScrapperClient;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -36,14 +34,14 @@ public class ListCommand implements Command {
         return new SendMessage(chatId, message);
     }
 
-    private String getListMessage(Long chatId){
+    private String getListMessage(Long chatId) {
         return getMessageWithSubscribedLinks(chatId);
     }
 
-    private String getMessageWithSubscribedLinks(Long chatId){
+    private String getMessageWithSubscribedLinks(Long chatId) {
         log.info("Getting all subscribed links for " + chatId);
         var links = scrapperClient.getLinks(chatId).links();
-        if (links.isEmpty()){
+        if (links.isEmpty()) {
             return "You do not have any links in subscription";
         }
         return links.stream().map(l -> l.url().toString()).collect(Collectors.joining("\n"));

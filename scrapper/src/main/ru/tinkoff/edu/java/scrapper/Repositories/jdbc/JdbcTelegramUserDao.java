@@ -22,20 +22,22 @@ public class JdbcTelegramUserDao implements TelegramUserRepository {
         return jdbcTemplate.query("SELECT * FROM tg_user", new DataClassRowMapper<>(TelegramUser.class));
     }
 
-    public TelegramUser getByChatId(Long chatId){
+    public TelegramUser getByChatId(Long chatId) {
         var queryResult = jdbcTemplate.query("SELECT * FROM tg_user WHERE chat_id=?",
                 new Object[]{chatId}, new DataClassRowMapper<>(TelegramUser.class));
-        if (queryResult.isEmpty()) return null;
-        else {
+        if (queryResult.isEmpty()) {
+            return null;
+        } else {
             return queryResult.get(0);
         }
     }
 
-    public TelegramUser getById(Long id){
+    public TelegramUser getById(Long id) {
         var queryResult = jdbcTemplate.query("SELECT * FROM tg_user WHERE id=?",
                 new Object[]{id}, new DataClassRowMapper<>(TelegramUser.class));
-        if (queryResult.isEmpty()) return null;
-        else {
+        if (queryResult.isEmpty()) {
+            return null;
+        } else {
             return queryResult.get(0);
         }
     }
@@ -48,8 +50,9 @@ public class JdbcTelegramUserDao implements TelegramUserRepository {
     public TelegramUser removeByChatId(Long chatId) {
         var queryResult = jdbcTemplate.query("DELETE FROM tg_user WHERE chat_id=? returning *", new Object[]{chatId},
                 new DataClassRowMapper<>(TelegramUser.class));
-        if (queryResult.isEmpty()) return null;
-        else {
+        if (queryResult.isEmpty()) {
+            return null;
+        } else {
             return queryResult.get(0);
         }
     }

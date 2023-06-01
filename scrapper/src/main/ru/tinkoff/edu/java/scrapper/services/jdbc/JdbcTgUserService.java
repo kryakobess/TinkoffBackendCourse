@@ -1,7 +1,6 @@
 package scrapper.services.jdbc;
 
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import scrapper.Exceptions.ScrapperBadRequestException;
 import scrapper.Exceptions.ScrapperNotFoundException;
@@ -24,7 +23,7 @@ public class JdbcTgUserService implements TgUserService {
     public void register(Long chatId) {
         try {
             userDao.add(new TelegramUser(chatId));
-        }catch (DuplicateKeyException ex){
+        } catch (DuplicateKeyException ex) {
             throw new ScrapperBadRequestException("User with chatId = " + chatId + " already exists");
         }
     }
@@ -42,7 +41,9 @@ public class JdbcTgUserService implements TgUserService {
     @Transactional(readOnly = true)
     public TelegramUser getUserById(Long id) {
         var user = userDao.getById(id);
-        if (user == null) throw new ScrapperNotFoundException("There is no user with id = " + id);
+        if (user == null) {
+            throw new ScrapperNotFoundException("There is no user with id = " + id);
+        }
         return user;
     }
 }

@@ -2,7 +2,6 @@ package scrapper.DTOs.responses;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.util.List;
 
 public record SOAnswerResponse(Answer[] items) implements SOItemsDescriptionInterface {
     @Override
@@ -26,14 +25,18 @@ public record SOAnswerResponse(Answer[] items) implements SOItemsDescriptionInte
         return items != null && items.length != 0;
     }
 
-    public record Answer(AnswerOwner owner, OffsetDateTime creation_date, OffsetDateTime last_activity_date, int score){
-        record AnswerOwner(int accept_rate, String display_name, String link){}
+    public record Answer(AnswerOwner owner, OffsetDateTime creation_date,
+                         OffsetDateTime last_activity_date, int score) {
 
-        public String getDescription(){
+        public String getDescription() {
             String descBeginning = "New answer";
-            if (!creation_date.equals(last_activity_date)) descBeginning = "New activity in answer";
+            if (!creation_date.equals(last_activity_date)) {
+                descBeginning = "New activity in answer";
+            }
             return String.format("%s from %s(%s) with accept_rate = %d\nAnswer score = %d\n",
-                    descBeginning, owner.display_name, owner.link, owner.accept_rate, score);
+                descBeginning, owner.display_name, owner.link, owner.accept_rate, score);
         }
+
+        record AnswerOwner(int accept_rate, String display_name, String link){}
     }
 }

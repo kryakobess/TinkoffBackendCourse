@@ -1,7 +1,6 @@
 package bot.configuration;
 
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -13,5 +12,5 @@ public record ApplicationConfig(
         ScrapperRabbitMQ scrapperRabbitMQ,
         boolean useQueue
 ) {
-        public record ScrapperRabbitMQ(String queue, String directExchange, String RoutingKey){}
+        public record ScrapperRabbitMQ(String queue, String directExchange, String routingKey){}
 }

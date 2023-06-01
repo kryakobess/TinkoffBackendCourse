@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import scrapper.DTOs.requests.TgBotLinkUpdateRequest;
 
 @RequiredArgsConstructor
-public class BotClientUpdateSender implements UpdateSender{
+public class BotClientUpdateSender implements UpdateSender {
 
     final TelegramBotClient botClient;
 

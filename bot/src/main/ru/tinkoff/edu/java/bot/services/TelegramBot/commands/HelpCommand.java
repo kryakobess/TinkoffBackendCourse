@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class HelpCommand implements Command{
+public class HelpCommand implements Command {
 
     private static String HELP_MESSAGE = """
                                            /start -- register yourself to get updates

@@ -21,7 +21,7 @@ public class JpaTgUserService implements TgUserService {
     public void register(Long chatId) {
         try {
             userRepository.save(new TelegramUserEntity(chatId));
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ScrapperBadRequestException("User with id = " + chatId + " already exists");
         }
     }

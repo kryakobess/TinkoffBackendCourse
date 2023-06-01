@@ -1,13 +1,11 @@
 package bot.DTOs.requests;
 
-import jakarta.validation.constraints.NotNull;
+import java.net.URI;
 import lombok.Builder;
 import org.hibernate.validator.constraints.URL;
 
-import java.net.URI;
-
 @Builder
-public record DeleteLinkScrapperRequest (
+public record DeleteLinkScrapperRequest(
         @URL
         URI link
 ){
